@@ -1,10 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import DashboardLayout from "@/components/DashboardLayout";
+import { DashboardLayout } from "@/components/dashboard-layout";
 // Remove direct import of server functions
 import { DashboardMetrics, RecentSession } from "@/types/database";
-import UserManagement from "@/components/UserManagement";
+import { UserManagement } from "@/components/user-management";
 
 export default function AdminDashboard() {
   const [metrics, setMetrics] = useState<DashboardMetrics | null>(null);

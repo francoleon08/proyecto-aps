@@ -11,7 +11,7 @@ interface DashboardLayoutProps {
   description: string;
 }
 
-export default function DashboardLayout({
+export function DashboardLayout({
   children,
   title,
   description,
