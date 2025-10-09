@@ -274,7 +274,6 @@ export default function UserManagement({ onBack }: UserManagementProps) {
                   onChange={(e) => setCreateForm({ ...createForm, user_type: e.target.value as UserType })}
                   className="mt-1 w-full px-3 py-2 border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                 >
-                  <option value="client">Cliente</option>
                   <option value="employee">Empleado</option>
                   <option value="admin">Administrador</option>
                 </select>
