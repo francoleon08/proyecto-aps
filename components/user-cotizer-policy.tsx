@@ -47,21 +47,19 @@ export default function UserCotizerPolicy({ onBack }: UserCotizerPolicyProps) {
 
   const handleInsuranceTypeSelect = async (type: InsuranceType) => {
     const multiplier = await getMultiplierForInsuranceType(type)
-    setQuoteData({ ...quoteData, insuranceType: type, multiplier })
+    setQuoteData((prev) => ({ ...prev!, insuranceType: type, multiplier }))
     setCurrentStep(2)
   }
 
   const handlePolicyDataSubmit = (
     data: LifePolicyData | HomePolicyData | VehiclePolicyData,
-    clientType: ClientType,
-    multiplier: number
+    clientType: ClientType
   ) => {
-    setQuoteData({
-      ...quoteData,
+    setQuoteData((prev) => ({
+      ...prev!,
       policyData: data,
       clientType,
-      multiplier,
-    })
+    }))
     setCurrentStep(3)
   }
 
@@ -109,7 +107,6 @@ export default function UserCotizerPolicy({ onBack }: UserCotizerPolicyProps) {
           )}
 
           {currentStep === 3 && (
-            //TODO: quoteData no se actualiza cuando se hace un fetch de multiplier
             <PlanSelectionStep quoteData={quoteData} onSelect={handlePlanSelect} onBack={handleBack} />
           )}
 

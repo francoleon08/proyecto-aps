@@ -12,7 +12,6 @@ interface PlanSelectionStepProps {
 }
 
 export function PlanSelectionStep({ quoteData, onSelect, onBack }: PlanSelectionStepProps) {
-  const [localQuoteData, setlocalQuoteData] = useState<QuoteData>(quoteData)
   const [plans, setPlans] = useState<PlanOption[]>([])
 
   useEffect(() => {
@@ -24,12 +23,8 @@ export function PlanSelectionStep({ quoteData, onSelect, onBack }: PlanSelection
     fetchPlans()
   }, [])
 
-  useEffect(() => {
-    setlocalQuoteData(quoteData)
-  }, [quoteData])
-
-  const calculatePrice = (plan: PolicyCategory) => {    
-    return Math.round(localQuoteData.basePrices[plan] * localQuoteData.multiplier)
+  const calculatePrice = (plan: PolicyCategory) => {
+    return Math.round(quoteData.basePrices[plan] * quoteData.multiplier)
   }
 
   return (

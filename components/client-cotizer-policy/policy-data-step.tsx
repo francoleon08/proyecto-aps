@@ -1,49 +1,44 @@
-"use client"
+'use client'
 
-import type React from "react"
+import type React from 'react'
 
-import { useState } from "react"
-import { Card } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { ArrowLeft } from "lucide-react"
+import { useState } from 'react'
+import { Card } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { ArrowLeft } from 'lucide-react'
 import type { InsuranceType, LifePolicyData, HomePolicyData, VehiclePolicyData, ClientType } from '@/lib/policy-plan'
 
 interface PolicyDataStepProps {
   insuranceType: InsuranceType
-  onSubmit: (
-    data: LifePolicyData | HomePolicyData | VehiclePolicyData,
-    clientType: ClientType,
-    multiplier: number,
-  ) => void
+  onSubmit: (data: LifePolicyData | HomePolicyData | VehiclePolicyData, clientType: ClientType) => void
   onBack: () => void
 }
 
 export function PolicyDataStep({ insuranceType, onSubmit, onBack }: PolicyDataStepProps) {
-  const [clientType, setClientType] = useState<ClientType>("person")
-  const [multiplier, setMultiplier] = useState(1)
+  const [clientType, setClientType] = useState<ClientType>('person')
 
   // Life policy state
   const [lifePolicyData, setLifePolicyData] = useState<LifePolicyData>({
-    certPresented: "",
-    certData: "",
+    certPresented: '',
+    certData: '',
   })
 
   // Home policy state
   const [homePolicyData, setHomePolicyData] = useState<HomePolicyData>({
-    constructionType: "Brick",
+    constructionType: 'Brick',
     buildingAge: 0,
-    city: "",
-    neighborhood: "",
+    city: '',
+    neighborhood: '',
   })
 
   // Vehicle policy state
   const [vehiclePolicyData, setVehiclePolicyData] = useState<VehiclePolicyData>({
     vehicleYear: new Date().getFullYear(),
-    vehicleModel: "",
-    vehicleTheftRisk: "low",
+    vehicleModel: '',
+    vehicleTheftRisk: 'low',
     driverViolations: 0,
   })
 
@@ -52,27 +47,27 @@ export function PolicyDataStep({ insuranceType, onSubmit, onBack }: PolicyDataSt
 
     let data: LifePolicyData | HomePolicyData | VehiclePolicyData
 
-    if (insuranceType === "life") {
+    if (insuranceType === 'life') {
       data = lifePolicyData
-    } else if (insuranceType === "home") {
+    } else if (insuranceType === 'home') {
       data = homePolicyData
     } else {
       data = vehiclePolicyData
     }
 
-    onSubmit(data, clientType, multiplier)
+    onSubmit(data, clientType)
   }
 
   const getTitle = () => {
     switch (insuranceType) {
-      case "life":
-        return "Datos del Seguro de Vida"
-      case "home":
-        return "Datos del Seguro de Hogar"
-      case "vehicle":
-        return "Datos del Seguro de Auto"
+      case 'life':
+        return 'Datos del Seguro de Vida'
+      case 'home':
+        return 'Datos del Seguro de Hogar'
+      case 'vehicle':
+        return 'Datos del Seguro de Auto'
       default:
-        return "Datos de la Póliza"
+        return 'Datos de la Póliza'
     }
   }
 
@@ -88,9 +83,9 @@ export function PolicyDataStep({ insuranceType, onSubmit, onBack }: PolicyDataSt
         </div>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-6">      
+      <form onSubmit={handleSubmit} className="space-y-6">
         {/* Life Policy Fields */}
-        {insuranceType === "life" && (
+        {insuranceType === 'life' && (
           <div className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="certPresented" className="text-foreground">
@@ -133,7 +128,7 @@ export function PolicyDataStep({ insuranceType, onSubmit, onBack }: PolicyDataSt
         )}
 
         {/* Home Policy Fields */}
-        {insuranceType === "home" && (
+        {insuranceType === 'home' && (
           <div className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="constructionType" className="text-foreground">
@@ -141,7 +136,7 @@ export function PolicyDataStep({ insuranceType, onSubmit, onBack }: PolicyDataSt
               </Label>
               <Select
                 value={homePolicyData.constructionType}
-                onValueChange={(value: "Brick" | "Concrete" | "Wood" | "Mixed") =>
+                onValueChange={(value: 'Brick' | 'Concrete' | 'Wood' | 'Mixed') =>
                   setHomePolicyData({ ...homePolicyData, constructionType: value })
                 }
               >
@@ -213,7 +208,7 @@ export function PolicyDataStep({ insuranceType, onSubmit, onBack }: PolicyDataSt
         )}
 
         {/* Vehicle Policy Fields */}
-        {insuranceType === "vehicle" && (
+        {insuranceType === 'vehicle' && (
           <div className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="vehicleYear" className="text-foreground">
