@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { updateUserStatus } from "@/lib/auth";
-import { UserStatus } from "@/types/database";
+import { Tables } from "@/types/database";
 
 export async function PATCH(
   request: NextRequest,
@@ -19,7 +19,7 @@ export async function PATCH(
 
     const result = await updateUserStatus(
       params.id,
-      status as UserStatus,
+      status as Tables<"users">["status"],
       admin_id
     );
 

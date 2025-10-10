@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { DashboardLayout } from "@/components/dashboard-layout";
 // Remove direct import of server functions
-import { DashboardMetrics, RecentSession } from "@/types/database";
+import { DashboardMetrics, RecentSession } from "@/types/custom";
 import { UserManagement } from "@/components/user-management";
 
 export default function AdminDashboard() {
