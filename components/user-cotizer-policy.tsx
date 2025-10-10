@@ -14,7 +14,8 @@ import {
   ClientType,
   QuoteData,
   PolicyCategory,
-  getQuoteData
+  getQuoteData,
+  getMultiplierForInsuranceType,
 } from '@/lib/policy-plan'
 
 interface UserCotizerPolicyProps {
@@ -26,13 +27,13 @@ export default function UserCotizerPolicy({ onBack }: UserCotizerPolicyProps) {
   const [quoteData, setQuoteData] = useState<QuoteData>()
   const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    const fetchInitialData = async () => {
-      const initialData = await getQuoteData()
-      setQuoteData(initialData)
-      setLoading(false)
-    }
+  const fetchInitialData = async () => {
+    const initialData = await getQuoteData()
+    setQuoteData(initialData)
+    setLoading(false)
+  }
 
+  useEffect(() => {
     fetchInitialData()
   }, [])
 
@@ -44,9 +45,9 @@ export default function UserCotizerPolicy({ onBack }: UserCotizerPolicyProps) {
     )
   }
 
-
-  const handleInsuranceTypeSelect = (type: InsuranceType) => {
-    setQuoteData({ ...quoteData, insuranceType: type })
+  const handleInsuranceTypeSelect = async (type: InsuranceType) => {
+    const multiplier = await getMultiplierForInsuranceType(type)
+    setQuoteData({ ...quoteData, insuranceType: type, multiplier })
     setCurrentStep(2)
   }
 
@@ -76,24 +77,13 @@ export default function UserCotizerPolicy({ onBack }: UserCotizerPolicyProps) {
   }
 
   const handleReset = () => {
-    setQuoteData({
-      insuranceType: null,
-      clientType: 'person',
-      multiplier: 1,
-      policyData: null,
-      selectedPlan: null,
-      basePrices: {
-        Premium: 1500,
-        Elite: 1000,
-        Basic: 500,
-      },
-    })
+    setLoading(true)
+    fetchInitialData()
     setCurrentStep(1)
   }
 
   const handleRegister = () => {
     console.log('Registering policy with data:', quoteData)
-    
   }
 
   return (
@@ -122,7 +112,14 @@ export default function UserCotizerPolicy({ onBack }: UserCotizerPolicyProps) {
             <PlanSelectionStep quoteData={quoteData} onSelect={handlePlanSelect} onBack={handleBack} />
           )}
 
-          {currentStep === 4 && <QuoteSummaryStep quoteData={quoteData} onBack={handleBack} onReset={handleReset} onConfirm={handleRegister} />}
+          {currentStep === 4 && (
+            <QuoteSummaryStep
+              quoteData={quoteData}
+              onBack={handleBack}
+              onReset={handleReset}
+              onConfirm={handleRegister}
+            />
+          )}
         </div>
         <div className="mt-8 text-right">
           <button onClick={onBack} className="text-md text-primary hover:underline">
