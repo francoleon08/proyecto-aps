@@ -109,15 +109,16 @@ export default function UserCotizerPolicy({ onBack }: UserCotizerPolicyProps) {
   }
 
   return (
-    <main className="min-h-screen bg-background py-8 px-4 sm:px-6 lg:px-8">
+    <main className="bg-white overflow-hidden shadow rounded-lg py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-5xl mx-auto">
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-foreground mb-2">Cotizador de Seguros</h1>
+          <h1 className="text-4xl font-bold text-foreground mb-2">Cotizador de Pólizas</h1>
           <p className="text-muted-foreground text-lg">Obtén tu cotización en 4 simples pasos</p>
         </div>
 
         <StepIndicator currentStep={currentStep} totalSteps={4} />
-
+      </div>
+      <div className="max-w-5xl mx-auto">
         <div className="mt-8">
           {currentStep === 1 && <InsuranceTypeStep onSelect={handleInsuranceTypeSelect} />}
 
@@ -135,7 +136,6 @@ export default function UserCotizerPolicy({ onBack }: UserCotizerPolicyProps) {
 
           {currentStep === 4 && <QuoteSummaryStep quoteData={quoteData} onBack={handleBack} onReset={handleReset} />}
         </div>
-
         <div className="mt-8 text-right">
           <button onClick={onBack} className="text-md text-primary hover:underline">
             &larr; Volver al Dashboard
