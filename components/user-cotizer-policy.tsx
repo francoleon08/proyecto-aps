@@ -1,14 +1,147 @@
-"use client"
+'use client'
+import { useState } from 'react'
+
+import { InsuranceTypeStep } from '@/components/client-cotizer-policy/insurance-type-step'
+import { PolicyDataStep } from '@/components/client-cotizer-policy/policy-data-step'
+import { PlanSelectionStep } from '@/components/client-cotizer-policy/plan-selection-step'
+import { QuoteSummaryStep } from '@/components/client-cotizer-policy/quote-summary-step'
+import { StepIndicator } from '@/components/client-cotizer-policy/step-indicator'
+
+export type InsuranceType = 'life' | 'home' | 'vehicle' | null
+export type PolicyCategory = 'Premium' | 'Elite' | 'Basic'
+export type ClientType = 'person' | 'business'
+
+export interface LifePolicyData {
+  certPresented: string
+  certData: string
+}
+
+export interface HomePolicyData {
+  constructionType: 'Brick' | 'Concrete' | 'Wood' | 'Mixed'
+  buildingAge: number
+  city: string
+  neighborhood: string
+}
+
+export interface VehiclePolicyData {
+  vehicleYear: number
+  vehicleModel: string
+  vehicleTheftRisk: string
+  driverViolations: number
+}
+
+export interface QuoteData {
+  insuranceType: InsuranceType
+  clientType: ClientType
+  multiplier: number
+  policyData: LifePolicyData | HomePolicyData | VehiclePolicyData | null
+  selectedPlan: PolicyCategory | null
+  basePrices: {
+    Premium: number
+    Elite: number
+    Basic: number
+  }
+}
 
 interface UserCotizerPolicyProps {
   onBack: () => void
 }
 
 export default function UserCotizerPolicy({ onBack }: UserCotizerPolicyProps) {
+  const [currentStep, setCurrentStep] = useState(1)
+  const [quoteData, setQuoteData] = useState<QuoteData>({
+    insuranceType: null,
+    clientType: 'person',
+    multiplier: 1,
+    policyData: null,
+    selectedPlan: null,
+    basePrices: {
+      Premium: 1500,
+      Elite: 1000,
+      Basic: 500,
+    },
+  })
+
+  const handleInsuranceTypeSelect = (type: InsuranceType) => {
+    setQuoteData({ ...quoteData, insuranceType: type })
+    setCurrentStep(2)
+  }
+
+  const handlePolicyDataSubmit = (
+    data: LifePolicyData | HomePolicyData | VehiclePolicyData,
+    clientType: ClientType,
+    multiplier: number
+  ) => {
+    setQuoteData({
+      ...quoteData,
+      policyData: data,
+      clientType,
+      multiplier,
+    })
+    setCurrentStep(3)
+  }
+
+  const handlePlanSelect = (plan: PolicyCategory) => {
+    setQuoteData({ ...quoteData, selectedPlan: plan })
+    setCurrentStep(4)
+  }
+
+  const handleBack = () => {
+    if (currentStep > 1) {
+      setCurrentStep(currentStep - 1)
+    }
+  }
+
+  const handleReset = () => {
+    setQuoteData({
+      insuranceType: null,
+      clientType: 'person',
+      multiplier: 1,
+      policyData: null,
+      selectedPlan: null,
+      basePrices: {
+        Premium: 1500,
+        Elite: 1000,
+        Basic: 500,
+      },
+    })
+    setCurrentStep(1)
+  }
+
   return (
-    <div>
-      <h1>hola</h1>
-      <button onClick={onBack}>Volver</button>
-    </div>
+    <main className="min-h-screen bg-background py-8 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-5xl mx-auto">
+        <div className="text-center mb-8">
+          <h1 className="text-4xl font-bold text-foreground mb-2">Cotizador de Seguros</h1>
+          <p className="text-muted-foreground text-lg">Obtén tu cotización en 4 simples pasos</p>
+        </div>
+
+        <StepIndicator currentStep={currentStep} totalSteps={4} />
+
+        <div className="mt-8">
+          {currentStep === 1 && <InsuranceTypeStep onSelect={handleInsuranceTypeSelect} />}
+
+          {currentStep === 2 && quoteData.insuranceType && (
+            <PolicyDataStep
+              insuranceType={quoteData.insuranceType}
+              onSubmit={handlePolicyDataSubmit}
+              onBack={handleBack}
+            />
+          )}
+
+          {currentStep === 3 && (
+            <PlanSelectionStep quoteData={quoteData} onSelect={handlePlanSelect} onBack={handleBack} />
+          )}
+
+          {currentStep === 4 && <QuoteSummaryStep quoteData={quoteData} onBack={handleBack} onReset={handleReset} />}
+        </div>
+
+        <div className="mt-8 text-right">
+          <button onClick={onBack} className="text-md text-primary hover:underline">
+            &larr; Volver al Dashboard
+          </button>
+        </div>
+      </div>
+    </main>
   )
 }
