@@ -12,6 +12,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Badge } from '@/components/ui/badge'
 import { Plus, Pencil, Trash2, Eye } from 'lucide-react'
 import Link from 'next/link'
+import { ConfirmDialog } from '@/components/confirm-dialog'
 
 export default function PlansListPage() {
   const [plans, setPlans] = useState<Tables<'plans'>[]>()
@@ -24,7 +25,6 @@ export default function PlansListPage() {
   }, [plans])
 
   function handleDelete(id: string) {
-    // todo: ask for confirmation (e.g., show modal)
     deletePlan(id)
       .then((deleted) => {
         if (deleted) {
@@ -112,15 +112,22 @@ export default function PlansListPage() {
                               <span className="sr-only">Edit</span>
                             </Button>
                           </Link>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="h-8 w-8 p-0 text-destructive hover:text-destructive hover:bg-destructive/10"
-                            onClick={() => handleDelete(plan.id)}
-                          >
-                            <Trash2 className="h-4 w-4" />
-                            <span className="sr-only">Delete</span>
-                          </Button>
+                          <ConfirmDialog
+                            trigger={
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="h-8 w-8 p-0 text-destructive hover:text-destructive hover:bg-destructive/10"
+                              >
+                                <Trash2 className="h-4 w-4" />
+                                <span className="sr-only">Delete</span>
+                              </Button>
+                            }
+                            title="Delete Plan?"
+                            description="Are you sure you want to delete this plan? This action cannot be undone."
+                            confirmText="Delete"
+                            onConfirm={async () => handleDelete(plan.id)}
+                          />
                         </div>
                       </TableCell>
                     </TableRow>
