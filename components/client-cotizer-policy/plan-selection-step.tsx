@@ -34,10 +34,6 @@ export function PlanSelectionStep({ quoteData, onSelect, onBack }: PlanSelection
         </Button>
         <div>
           <h2 className="text-2xl font-bold text-foreground">Selecciona tu Plan</h2>
-          <p className="text-muted-foreground">
-            Cliente: {quoteData.clientType === 'person' ? 'Persona' : 'Empresa'} | Multiplicador: {quoteData.multiplier}
-            x
-          </p>
         </div>
       </div>
 
@@ -45,30 +41,38 @@ export function PlanSelectionStep({ quoteData, onSelect, onBack }: PlanSelection
         {plans.map((plan) => (
           <div
             key={plan.name}
-            className={`relative rounded-lg border-2 bg-card p-6 transition-all ${
-              plan.recommended ? 'border-primary shadow-lg' : 'border-border hover:border-primary/50'
-            }`}
+            className={`relative rounded-lg border-2 p-6 transition-all flex flex-col h-full
+              ${
+                plan.recommended
+                  ? 'border-red-600 bg-gray-100 shadow-lg'
+                  : 'border-border bg-card hover:border-primary/50'
+              }
+            `}
           >
             {plan.recommended && (
               <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                <span className="bg-primary text-primary-foreground text-xs font-semibold px-3 py-1 rounded-full">
+                <span className="bg-red-500 text-white text-xs font-semibold px-3 py-1 rounded-full shadow">
                   Recomendado
                 </span>
               </div>
             )}
 
-            <div className="text-center mb-6">
-              <h3 className="text-2xl font-bold text-foreground mb-2">{plan.name}</h3>
-              <div className="text-3xl font-bold text-primary">
+            <div className={`text-center mb-6 ${plan.recommended ? 'text-primary' : 'text-foreground'}`}>
+              <h3 className={`text-2xl font-bold mb-2 ${plan.recommended ? 'text-primary' : 'text-foreground'}`}>
+                {plan.name}
+              </h3>
+              <div className={`text-3xl font-bold ${plan.recommended ? 'text-primary' : 'text-primary'}`}>
                 ${calculatePrice(plan.name)}
                 <span className="text-sm text-muted-foreground font-normal">/mes</span>
               </div>
             </div>
 
-            <ul className="space-y-3 mb-6">
+            <ul className="space-y-3 mb-6 flex-grow">
               {plan.features.map((feature, index) => (
                 <li key={index} className="flex items-start gap-2">
-                  <Check className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+                  <Check
+                    className={`h-5 w-5 flex-shrink-0 mt-0.5 ${plan.recommended ? 'text-primary' : 'text-primary'}`}
+                  />
                   <span className="text-sm text-foreground">{feature}</span>
                 </li>
               ))}
@@ -76,10 +80,10 @@ export function PlanSelectionStep({ quoteData, onSelect, onBack }: PlanSelection
 
             <Button
               onClick={() => onSelect(plan.name)}
-              className={`w-full ${
+              className={`w-full mt-auto ${
                 plan.recommended
-                  ? 'bg-primary text-primary-foreground hover:bg-primary/90'
-                  : 'bg-secondary text-secondary-foreground hover:bg-secondary/90'
+                  ? 'bg-red-500 text-white hover:bg-primary/90'
+                  : 'bg-secondary text-secondary-foreground hover:bg-primary/90 hover:text-white transition-colors duration-200'
               }`}
             >
               Seleccionar {plan.name}
