@@ -305,7 +305,7 @@ export function PolicyDataStep({ insuranceType, onSubmit, onBack }: PolicyDataSt
           <Button type="button" variant="outline" onClick={onBack} className="border-border bg-transparent">
             Atrás
           </Button>
-          <Button type="submit" className="bg-secondary text-secondary-foreground hover:bg-secondary/90">
+          <Button type="submit" className="bg-red-500 text-white hover:bg-red-600">
             Siguiente
           </Button>
         </div>

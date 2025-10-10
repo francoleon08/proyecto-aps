@@ -21,7 +21,7 @@ export function InsuranceTypeStep({ onSelect }: InsuranceTypeStepProps) {
         >
           <div className="flex flex-col items-center gap-4">
             <div className="rounded-full bg-primary/10 p-4 transition-colors group-hover:bg-primary/20">
-              <Heart className="h-12 w-12 text-primary" />
+              <Heart className="h-12 w-12 text-red-600" />
             </div>
             <h3 className="text-xl font-semibold text-foreground">Persona</h3>
             <p className="text-sm text-muted-foreground text-center">Seguro de vida y salud</p>
@@ -34,7 +34,7 @@ export function InsuranceTypeStep({ onSelect }: InsuranceTypeStepProps) {
         >
           <div className="flex flex-col items-center gap-4">
             <div className="rounded-full bg-primary/10 p-4 transition-colors group-hover:bg-primary/20">
-              <Home className="h-12 w-12 text-primary" />
+              <Home className="h-12 w-12 text-yellow-600" />
             </div>
             <h3 className="text-xl font-semibold text-foreground">Hogar</h3>
             <p className="text-sm text-muted-foreground text-center">Protección para tu casa</p>
@@ -47,7 +47,7 @@ export function InsuranceTypeStep({ onSelect }: InsuranceTypeStepProps) {
         >
           <div className="flex flex-col items-center gap-4">
             <div className="rounded-full bg-primary/10 p-4 transition-colors group-hover:bg-primary/20">
-              <Car className="h-12 w-12 text-primary" />
+              <Car className="h-12 w-12 text-blue-600" />
             </div>
             <h3 className="text-xl font-semibold text-foreground">Auto</h3>
             <p className="text-sm text-muted-foreground text-center">Seguro vehicular completo</p>
