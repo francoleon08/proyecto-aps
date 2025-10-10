@@ -109,6 +109,7 @@ export default function UserCotizerPolicy({ onBack }: UserCotizerPolicyProps) {
           )}
 
           {currentStep === 3 && (
+            //TODO: quoteData no se actualiza cuando se hace un fetch de multiplier
             <PlanSelectionStep quoteData={quoteData} onSelect={handlePlanSelect} onBack={handleBack} />
           )}
 
