@@ -6,42 +6,15 @@ import { PolicyDataStep } from '@/components/client-cotizer-policy/policy-data-s
 import { PlanSelectionStep } from '@/components/client-cotizer-policy/plan-selection-step'
 import { QuoteSummaryStep } from '@/components/client-cotizer-policy/quote-summary-step'
 import { StepIndicator } from '@/components/client-cotizer-policy/step-indicator'
-
-export type InsuranceType = 'life' | 'home' | 'vehicle' | null
-export type PolicyCategory = 'Premium' | 'Elite' | 'Basic'
-export type ClientType = 'person' | 'business'
-
-export interface LifePolicyData {
-  certPresented: string
-  certData: string
-}
-
-export interface HomePolicyData {
-  constructionType: 'Brick' | 'Concrete' | 'Wood' | 'Mixed'
-  buildingAge: number
-  city: string
-  neighborhood: string
-}
-
-export interface VehiclePolicyData {
-  vehicleYear: number
-  vehicleModel: string
-  vehicleTheftRisk: string
-  driverViolations: number
-}
-
-export interface QuoteData {
-  insuranceType: InsuranceType
-  clientType: ClientType
-  multiplier: number
-  policyData: LifePolicyData | HomePolicyData | VehiclePolicyData | null
-  selectedPlan: PolicyCategory | null
-  basePrices: {
-    Premium: number
-    Elite: number
-    Basic: number
-  }
-}
+import type {
+  InsuranceType,
+  LifePolicyData,
+  HomePolicyData,
+  VehiclePolicyData,
+  ClientType,
+  QuoteData,
+  PolicyCategory,
+} from '@/lib/policy-plan'
 
 interface UserCotizerPolicyProps {
   onBack: () => void
