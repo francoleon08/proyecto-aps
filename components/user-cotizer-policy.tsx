@@ -1,12 +1,12 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 import { InsuranceTypeStep } from '@/components/client-cotizer-policy/insurance-type-step'
 import { PolicyDataStep } from '@/components/client-cotizer-policy/policy-data-step'
 import { PlanSelectionStep } from '@/components/client-cotizer-policy/plan-selection-step'
 import { QuoteSummaryStep } from '@/components/client-cotizer-policy/quote-summary-step'
 import { StepIndicator } from '@/components/client-cotizer-policy/step-indicator'
-import type {
+import {
   InsuranceType,
   LifePolicyData,
   HomePolicyData,
@@ -14,6 +14,7 @@ import type {
   ClientType,
   QuoteData,
   PolicyCategory,
+  getQuoteData
 } from '@/lib/policy-plan'
 
 interface UserCotizerPolicyProps {
@@ -22,18 +23,27 @@ interface UserCotizerPolicyProps {
 
 export default function UserCotizerPolicy({ onBack }: UserCotizerPolicyProps) {
   const [currentStep, setCurrentStep] = useState(1)
-  const [quoteData, setQuoteData] = useState<QuoteData>({
-    insuranceType: null,
-    clientType: 'person',
-    multiplier: 1,
-    policyData: null,
-    selectedPlan: null,
-    basePrices: {
-      Premium: 1500,
-      Elite: 1000,
-      Basic: 500,
-    },
-  })
+  const [quoteData, setQuoteData] = useState<QuoteData>()
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchInitialData = async () => {
+      const initialData = await getQuoteData()
+      setQuoteData(initialData)
+      setLoading(false)
+    }
+
+    fetchInitialData()
+  }, [])
+
+  if (loading || !quoteData) {
+    return (
+      <div>
+        <p className="text-center text-foreground">Cargando cotizador...</p>
+      </div>
+    )
+  }
+
 
   const handleInsuranceTypeSelect = (type: InsuranceType) => {
     setQuoteData({ ...quoteData, insuranceType: type })
@@ -82,7 +92,8 @@ export default function UserCotizerPolicy({ onBack }: UserCotizerPolicyProps) {
   }
 
   const handleRegister = () => {
-    alert('Funcionalidad de registro no implementada aún.')
+    console.log('Registering policy with data:', quoteData)
+    
   }
 
   return (

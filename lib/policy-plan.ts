@@ -34,6 +34,19 @@ export interface QuoteData {
   }
 }
 
+export const initialQuoteDataMock: QuoteData = {
+  insuranceType: null,
+  clientType: 'person',
+  multiplier: 1,
+  policyData: null,
+  selectedPlan: null,
+  basePrices: {
+    Premium: 1500,
+    Elite: 1000,
+    Basic: 500,
+  },
+}
+
 export interface PlanOption {
   name: PolicyCategory
   features: string[]
@@ -68,6 +81,26 @@ const plansMock: PlanOption[] = [
     ],
   },
 ]
+
+export async function getQuoteData(): Promise<QuoteData> {
+  //TODO: integrar con backend -> traer solamente los precios base y asignarselos a basePrices
+  //Ej: basePrices: await fetch('/api/base-prices').then(res => res.json())
+  const basePrices = {
+    Premium: 1500,
+    Elite: 1000,
+    Basic: 500,
+  }
+
+  const data: QuoteData = {
+    insuranceType: null,
+    clientType: 'person',
+    multiplier: 1,
+    policyData: null,
+    selectedPlan: null,
+    basePrices,
+  }
+  return data
+}
 
 export async function getAvailablePlans(): Promise<PlanOption[]> {
   //TODO: integrar con backend
