@@ -1,9 +1,9 @@
-"use client"
-
-import { Card } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Check, ArrowLeft } from "lucide-react"
-import type { QuoteData, PolicyCategory } from "@/components/user-cotizer-policy"
+'use client'
+import { useState, useEffect } from 'react'
+import { Card } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Check, ArrowLeft } from 'lucide-react'
+import { QuoteData, PolicyCategory, PlanOption, getAvailablePlans } from '@/lib/policy-plan'
 
 interface PlanSelectionStepProps {
   quoteData: QuoteData
@@ -12,39 +12,16 @@ interface PlanSelectionStepProps {
 }
 
 export function PlanSelectionStep({ quoteData, onSelect, onBack }: PlanSelectionStepProps) {
-  const plans: Array<{
-    name: PolicyCategory
-    features: string[]
-    recommended?: boolean
-  }> = [
-    {
-      name: "Basic",
-      features: ["Cobertura básica", "Asistencia 24/7", "Deducible estándar", "Renovación anual"],
-    },
-    {
-      name: "Elite",
-      features: [
-        "Cobertura ampliada",
-        "Asistencia prioritaria",
-        "Deducible reducido",
-        "Beneficios adicionales",
-        "Renovación automática",
-      ],
-      recommended: true,
-    },
-    {
-      name: "Premium",
-      features: [
-        "Cobertura total",
-        "Asistencia VIP",
-        "Sin deducible",
-        "Todos los beneficios",
-        "Renovación automática",
-        "Asesor personal",
-      ],
-    },
-  ]
+  const [plans, setPlans] = useState<PlanOption[]>([])
 
+  useEffect(() => {
+    const fetchPlans = async () => {
+      const availablePlans = await getAvailablePlans()
+      setPlans(availablePlans)
+    }
+
+    fetchPlans()
+  }, [])
   const calculatePrice = (plan: PolicyCategory) => {
     return Math.round(quoteData.basePrices[plan] * quoteData.multiplier)
   }
@@ -58,7 +35,7 @@ export function PlanSelectionStep({ quoteData, onSelect, onBack }: PlanSelection
         <div>
           <h2 className="text-2xl font-bold text-foreground">Selecciona tu Plan</h2>
           <p className="text-muted-foreground">
-            Cliente: {quoteData.clientType === "person" ? "Persona" : "Empresa"} | Multiplicador: {quoteData.multiplier}
+            Cliente: {quoteData.clientType === 'person' ? 'Persona' : 'Empresa'} | Multiplicador: {quoteData.multiplier}
             x
           </p>
         </div>
@@ -69,7 +46,7 @@ export function PlanSelectionStep({ quoteData, onSelect, onBack }: PlanSelection
           <div
             key={plan.name}
             className={`relative rounded-lg border-2 bg-card p-6 transition-all ${
-              plan.recommended ? "border-primary shadow-lg" : "border-border hover:border-primary/50"
+              plan.recommended ? 'border-primary shadow-lg' : 'border-border hover:border-primary/50'
             }`}
           >
             {plan.recommended && (
@@ -101,8 +78,8 @@ export function PlanSelectionStep({ quoteData, onSelect, onBack }: PlanSelection
               onClick={() => onSelect(plan.name)}
               className={`w-full ${
                 plan.recommended
-                  ? "bg-primary text-primary-foreground hover:bg-primary/90"
-                  : "bg-secondary text-secondary-foreground hover:bg-secondary/90"
+                  ? 'bg-primary text-primary-foreground hover:bg-primary/90'
+                  : 'bg-secondary text-secondary-foreground hover:bg-secondary/90'
               }`}
             >
               Seleccionar {plan.name}
