@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getUsers } from "@/lib/auth";
-import { UserType, UserStatus } from "@/types/database";
+import { Tables } from "@/types/database";
 
 export async function GET(request: NextRequest) {
   try {
@@ -8,8 +8,8 @@ export async function GET(request: NextRequest) {
     const limit = parseInt(searchParams.get("limit") || "50");
     const offset = parseInt(searchParams.get("offset") || "0");
     const search = searchParams.get("search") || undefined;
-    const userType = searchParams.get("user_type") as UserType | undefined;
-    const status = searchParams.get("status") as UserStatus | undefined;
+    const userType = searchParams.get("user_type") as Tables<'users'>['user_type'] | undefined;
+    const status = searchParams.get("status") as Tables<'users'>['status'] | undefined;
 
     const result = await getUsers(limit, offset, search, userType, status);
 

@@ -2,18 +2,18 @@
 
 import { useState, useEffect } from "react";
 // Remove direct import of server functions
-import { User, UserType, UserStatus } from "@/types/database";
+import { Tables } from "@/types/database";
 
 interface UserManagementProps {
   onBack: () => void;
 }
 
 export function UserManagement({ onBack }: UserManagementProps) {
-  const [users, setUsers] = useState<User[]>([]);
+  const [users, setUsers] = useState<Tables<'users'>[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
-  const [userTypeFilter, setUserTypeFilter] = useState<UserType | "">("");
-  const [statusFilter, setStatusFilter] = useState<UserStatus | "">("");
+  const [userTypeFilter, setUserTypeFilter] = useState<Tables<'users'>['user_type'] | "">("");
+  const [statusFilter, setStatusFilter] = useState<Tables<'users'>['status'] | "">("");
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
   const [error, setError] = useState("");
@@ -25,7 +25,7 @@ export function UserManagement({ onBack }: UserManagementProps) {
     email: "",
     password: "",
     confirmPassword: "",
-    user_type: "client" as UserType,
+    user_type: "client" as Tables<'users'>['user_type'],
   });
 
   useEffect(() => {
@@ -60,7 +60,7 @@ export function UserManagement({ onBack }: UserManagementProps) {
     }
   };
 
-  const handleStatusToggle = async (userId: string, currentStatus: UserStatus) => {
+  const handleStatusToggle = async (userId: string, currentStatus: Tables<'users'>['status']) => {
     try {
       const newStatus = currentStatus === "active" ? "inactive" : "active";
       const response = await fetch(`/api/admin/users/${userId}/status`, {
@@ -134,8 +134,8 @@ export function UserManagement({ onBack }: UserManagementProps) {
     }
   };
 
-  const getUserTypeLabel = (userType: UserType) => {
-    const labels: Record<UserType, string> = {
+  const getUserTypeLabel = (userType: Tables<'users'>['user_type']) => {
+    const labels: Record<Tables<'users'>['user_type'], string> = {
       client: "Cliente",
       employee: "Empleado",
       admin: "Administrador",
@@ -143,18 +143,18 @@ export function UserManagement({ onBack }: UserManagementProps) {
     return labels[userType];
   };
 
-  const getStatusLabel = (status: UserStatus) => {
+  const getStatusLabel = (status: Tables<'users'>['status']) => {
     return status === "active" ? "Activo" : "Inactivo";
   };
 
-  const getStatusColor = (status: UserStatus) => {
+  const getStatusColor = (status: Tables<'users'>['status']) => {
     return status === "active" 
       ? "bg-green-100 text-green-800" 
       : "bg-red-100 text-red-800";
   };
 
-  const getUserTypeColor = (userType: UserType) => {
-    const colors: Record<UserType, string> = {
+  const getUserTypeColor = (userType: Tables<'users'>['user_type']) => {
+    const colors: Record<Tables<'users'>['user_type'], string> = {
       client: "bg-green-100 text-green-800",
       employee: "bg-blue-100 text-blue-800",
       admin: "bg-red-100 text-red-800",
@@ -208,7 +208,7 @@ export function UserManagement({ onBack }: UserManagementProps) {
             {/* User Type Filter */}
             <select
               value={userTypeFilter}
-              onChange={(e) => setUserTypeFilter(e.target.value as UserType | "")}
+              onChange={(e) => setUserTypeFilter(e.target.value as Tables<'users'>['user_type'] | "")}
               className="px-3 py-2 border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
             >
               <option value="">Todos los tipos</option>
@@ -220,7 +220,7 @@ export function UserManagement({ onBack }: UserManagementProps) {
             {/* Status Filter */}
             <select
               value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value as UserStatus | "")}
+              onChange={(e) => setStatusFilter(e.target.value as Tables<'users'>['status'] | "")}
               className="px-3 py-2 border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
             >
               <option value="">Todos los estados</option>
@@ -271,7 +271,7 @@ export function UserManagement({ onBack }: UserManagementProps) {
                 <label className="block text-sm font-medium text-gray-700">Tipo de usuario</label>
                 <select
                   value={createForm.user_type}
-                  onChange={(e) => setCreateForm({ ...createForm, user_type: e.target.value as UserType })}
+                  onChange={(e) => setCreateForm({ ...createForm, user_type: e.target.value as Tables<'users'>['user_type'] })}
                   className="mt-1 w-full px-3 py-2 border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                 >
                   <option value="employee">Empleado</option>
@@ -370,7 +370,7 @@ export function UserManagement({ onBack }: UserManagementProps) {
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {new Date(user.created_at).toLocaleDateString()}
+                      {user.created_at && new Date(user.created_at).toLocaleDateString()}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <button
