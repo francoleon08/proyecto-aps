@@ -8,7 +8,7 @@ interface UserManagementProps {
   onBack: () => void;
 }
 
-export default function UserManagement({ onBack }: UserManagementProps) {
+export function UserManagement({ onBack }: UserManagementProps) {
   const [users, setUsers] = useState<User[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");

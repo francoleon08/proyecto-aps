@@ -21,7 +21,7 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(url)
   }
 
-  const isAdminRoute = pathname.includes('/admin')
+  const isAdminRoute = pathname.includes('/admin') || pathname.includes('/plans')
   if (isAdminRoute && !hasRole('admin')) {
     const url = request.nextUrl.clone()
     url.pathname = '/unauthorized'
