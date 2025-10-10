@@ -10,7 +10,7 @@ interface InsuranceTypeStepProps {
 
 export function InsuranceTypeStep({ onSelect }: InsuranceTypeStepProps) {
   return (
-    <Card className="p-8 border-2 border-border">
+    <Card className="p-8">
       <h2 className="text-2xl font-bold text-foreground mb-2">¿Qué deseas asegurar?</h2>
       <p className="text-muted-foreground mb-8">Selecciona el tipo de seguro que necesitas</p>
 

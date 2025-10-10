@@ -50,7 +50,7 @@ export function PlanSelectionStep({ quoteData, onSelect, onBack }: PlanSelection
   }
 
   return (
-    <Card className="p-8 border-2 border-border">
+    <Card className="p-8">
       <div className="flex items-center gap-4 mb-6">
         <Button variant="ghost" size="icon" onClick={onBack} className="text-foreground">
           <ArrowLeft className="h-5 w-5" />
