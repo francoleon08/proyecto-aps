@@ -1,40 +1,42 @@
-"use client"
+'use client'
 
-import { useState } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { Switch } from "@/components/ui/switch"
-import { Plus, X } from "lucide-react"
-import { useRouter } from "next/navigation"
+import { useState } from 'react'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
+import { Switch } from '@/components/ui/switch'
+import { Plus, X } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { createPlan, updatePlan } from '@/actions/plans'
+import { Tables } from '@/types/database'
 
 interface PlanFormProps {
-  initialData?: {
-    category: string
-    homeDescription: string
-    personDescription: string
-    vehicleDescription: string
-    benefits: string[]
-    basePrice: number
-    active: boolean
-  }
+  initialData?: Tables<'plans'>
   isEditing?: boolean
 }
 
 export function PlanForm({ initialData, isEditing = false }: PlanFormProps) {
   const router = useRouter()
-  const [category, setCategory] = useState(initialData?.category || "")
-  const [homeDescription, setHomeDescription] = useState(initialData?.homeDescription || "")
-  const [personDescription, setPersonDescription] = useState(initialData?.personDescription || "")
-  const [vehicleDescription, setVehicleDescription] = useState(initialData?.vehicleDescription || "")
-  const [benefits, setBenefits] = useState<string[]>(initialData?.benefits || [""])
-  const [basePrice, setBasePrice] = useState(initialData?.basePrice?.toString() || "")
-  const [isActive, setIsActive] = useState(initialData?.active ?? true)
+  const [category, setCategory] = useState(initialData?.category || '')
+  const [generalCoverage, setGeneralCoverage] = useState(initialData?.general_coverage || 0)
+  const [homeDescription, setHomeDescription] = useState(
+    (initialData && (initialData?.description as { home: string }).home) || ''
+  )
+  const [personDescription, setPersonDescription] = useState(
+    (initialData && (initialData?.description as { person: string }).person) || ''
+  )
+  const [vehicleDescription, setVehicleDescription] = useState(
+    (initialData && (initialData?.description as { vehicle: string }).vehicle) || ''
+  )
+  const [benefits, setBenefits] = useState<string[]>((initialData && (initialData?.benefits as string[])) || [''])
+  const [basePrice, setBasePrice] = useState(initialData?.base_price?.toString() || '')
+  const [isActive, setIsActive] = useState(initialData?.is_active ?? true)
+  const [loading, setLoading] = useState(false)
 
   const addBenefit = () => {
-    setBenefits([...benefits, ""])
+    setBenefits([...benefits, ''])
   }
 
   const removeBenefit = (index: number) => {
@@ -48,21 +50,50 @@ export function PlanForm({ initialData, isEditing = false }: PlanFormProps) {
   }
 
   const handleSave = () => {
-    // TODO: Implement save logic
-    console.log("Saving plan:", {
+    if (loading) return
+    setLoading(true)
+    const plan = {
       category,
-      homeDescription,
-      personDescription,
-      vehicleDescription,
-      benefits: benefits.filter((b) => b.trim() !== ""),
-      basePrice: Number.parseFloat(basePrice),
-      active: isActive,
-    })
-    router.push("/plans")
+      description: {
+        home: homeDescription,
+        person: personDescription,
+        vehicle: vehicleDescription,
+      },
+      benefits: benefits.filter((b) => b.trim() !== ''),
+      base_price: Number.parseFloat(basePrice),
+      is_active: isActive,
+      general_coverage: generalCoverage,
+    }
+    if (isEditing) {
+      if (!initialData?.id) {
+        // TODO: handle error
+        setLoading(false)
+        return
+      }
+      updatePlan(initialData.id, plan)
+        .then(() => {
+          // TODO: show success notification
+          router.push('/plans')
+        })
+        .catch((error) => {
+          // TODO: handle error (e.g., show a notification)
+          setLoading(false)
+        })
+    } else {
+      createPlan(plan)
+        .then(() => {
+          // TODO: show success notification
+          router.push('/plans')
+        })
+        .catch((error) => {
+          // TODO: handle error (e.g., show a notification)
+          setLoading(false)
+        })
+    }
   }
 
   const handleCancel = () => {
-    router.push("/plans")
+    router.push('/plans')
   }
 
   return (
@@ -85,6 +116,19 @@ export function PlanForm({ initialData, isEditing = false }: PlanFormProps) {
               placeholder="e.g., Premium, Elite, Basic"
               value={category}
               onChange={(e) => setCategory(e.target.value)}
+              className="bg-background border-input text-foreground"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="general_coverage" className="text-card-foreground">
+              General Coverage
+            </Label>
+            <Input
+              id="general_coverage"
+              type="number"
+              placeholder="0.00"
+              value={generalCoverage}
+              onChange={(e) => setGeneralCoverage(Number(e.target.value))}
               className="bg-background border-input text-foreground"
             />
           </div>
@@ -208,8 +252,12 @@ export function PlanForm({ initialData, isEditing = false }: PlanFormProps) {
 
       {/* Actions */}
       <div className="flex items-center gap-4">
-        <Button onClick={handleSave} className="bg-primary text-primary-foreground hover:bg-primary/90">
-          {isEditing ? "Update Plan" : "Create Plan"}
+        <Button
+          onClick={handleSave}
+          className="bg-primary text-primary-foreground hover:bg-primary/90"
+          disabled={loading}
+        >
+          {isEditing ? 'Update Plan' : 'Create Plan'}
         </Button>
         <Button
           variant="outline"
