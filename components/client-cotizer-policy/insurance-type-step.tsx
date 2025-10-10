@@ -2,7 +2,7 @@
 
 import { Card } from "@/components/ui/card"
 import { Heart, Home, Car } from "lucide-react"
-import type { InsuranceType } from "@/components/user-cotizer-policy"
+import type { InsuranceType } from '@/lib/policy-plan'
 
 interface InsuranceTypeStepProps {
   onSelect: (type: InsuranceType) => void

@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { ArrowLeft } from "lucide-react"
-import type { InsuranceType, LifePolicyData, HomePolicyData, VehiclePolicyData, ClientType } from "@/components/user-cotizer-policy"
+import type { InsuranceType, LifePolicyData, HomePolicyData, VehiclePolicyData, ClientType } from '@/lib/policy-plan'
 
 interface PolicyDataStepProps {
   insuranceType: InsuranceType
