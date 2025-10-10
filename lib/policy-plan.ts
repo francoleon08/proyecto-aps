@@ -105,7 +105,7 @@ export async function getQuoteData(): Promise<QuoteData> {
 export async function getMultiplierForInsuranceType(type: InsuranceType): Promise<number> {
   //TODO: integrar con backend. En base a un tipo de seguro, traer el multiplicador correspondiente
   //Ej: return await fetch(`/api/multiplier?type=${type}`).then(res => res.json())
-  return type === 'life' ? 1 : type === 'home' ? 1.2 : type === 'vehicle' ? 1.5 : 1
+  return type === 'life' ? 1.2 : type === 'home' ? 1.3 : type === 'vehicle' ? 1.5 : 1
 }
 
 export async function getAvailablePlans(): Promise<PlanOption[]> {
