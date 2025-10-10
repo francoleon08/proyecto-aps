@@ -81,6 +81,10 @@ export default function UserCotizerPolicy({ onBack }: UserCotizerPolicyProps) {
     setCurrentStep(1)
   }
 
+  const handleRegister = () => {
+    alert('Funcionalidad de registro no implementada aún.')
+  }
+
   return (
     <main className="bg-white overflow-hidden shadow rounded-lg py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-5xl mx-auto">
@@ -107,7 +111,7 @@ export default function UserCotizerPolicy({ onBack }: UserCotizerPolicyProps) {
             <PlanSelectionStep quoteData={quoteData} onSelect={handlePlanSelect} onBack={handleBack} />
           )}
 
-          {currentStep === 4 && <QuoteSummaryStep quoteData={quoteData} onBack={handleBack} onReset={handleReset} />}
+          {currentStep === 4 && <QuoteSummaryStep quoteData={quoteData} onBack={handleBack} onReset={handleReset} onConfirm={handleRegister} />}
         </div>
         <div className="mt-8 text-right">
           <button onClick={onBack} className="text-md text-primary hover:underline">

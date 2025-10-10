@@ -1,5 +1,6 @@
 'use client'
 
+import { useEffect, useState } from 'react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { ArrowLeft, CheckCircle2 } from 'lucide-react'
@@ -9,9 +10,22 @@ interface QuoteSummaryStepProps {
   quoteData: QuoteData
   onBack: () => void
   onReset: () => void
+  onConfirm?: () => void
 }
 
-export function QuoteSummaryStep({ quoteData, onBack, onReset }: QuoteSummaryStepProps) {
+export function QuoteSummaryStep({ quoteData, onBack, onReset, onConfirm }: QuoteSummaryStepProps) {
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const timeRandom = Math.floor(Math.random() * 1000) + 1000
+
+    const timer = setTimeout(() => {
+      setLoading(false)
+    }, timeRandom)
+
+    return () => clearTimeout(timer)
+  }, [])
+
   const finalPrice = quoteData.selectedPlan
     ? Math.round(quoteData.basePrices[quoteData.selectedPlan] * quoteData.multiplier)
     : 0
@@ -29,6 +43,14 @@ export function QuoteSummaryStep({ quoteData, onBack, onReset }: QuoteSummarySte
     }
   }
 
+  if (loading) {
+    return (
+      <Card className="p-8 flex items-center justify-center">
+        <div className="text-center text-foreground">Calculando tu cotización...</div>
+      </Card>
+    )
+  }
+
   return (
     <Card className="p-8">
       <div className="flex items-center gap-4 mb-6">
@@ -43,8 +65,8 @@ export function QuoteSummaryStep({ quoteData, onBack, onReset }: QuoteSummarySte
 
       <div className="space-y-6">
         {/* Success Message */}
-        <div className="flex items-center gap-3 p-4 bg-primary/10 rounded-lg border border-primary/20">
-          <CheckCircle2 className="h-6 w-6 text-primary flex-shrink-0" />
+        <div className="flex items-center gap-3 p-4 bg-gray-100 rounded-lg border border-primary/20">
+          <CheckCircle2 className="h-6 w-6 text-green-500 flex-shrink-0" />
           <p className="text-foreground font-medium">¡Tu cotización está lista!</p>
         </div>
 
@@ -66,10 +88,10 @@ export function QuoteSummaryStep({ quoteData, onBack, onReset }: QuoteSummarySte
         </div>
 
         {/* Calculation Formula */}
-        <div className="p-6 bg-accent/10 rounded-lg border border-accent/20">
+        <div className="p-6 bg-red-50 rounded-lg border border-red-200">
           <h3 className="text-lg font-semibold text-foreground mb-3">Cálculo de la Cotización</h3>
-          <div className="flex items-center gap-2 text-foreground font-mono text-sm flex-wrap">
-            <span className="bg-primary text-primary-foreground px-3 py-1 rounded font-bold">${finalPrice}</span>
+          <div className="flex items-center justify-end w-full">
+            <span className="text-xl font-bold text-primary bg-primary/10 px-2 py-2 rounded-lg">${finalPrice}</span>
           </div>
         </div>
 
@@ -78,7 +100,12 @@ export function QuoteSummaryStep({ quoteData, onBack, onReset }: QuoteSummarySte
           <Button onClick={onReset} variant="outline" className="flex-1 border-border bg-transparent">
             Nueva Cotización
           </Button>
-          <Button className="flex-1 bg-secondary text-secondary-foreground hover:bg-secondary/90">
+          <Button
+            onClick={onConfirm}
+            disabled={!onConfirm}
+            variant="default"
+            className="flex-1 bg-red-600 hover:bg-red-700 border-red-600 hover:border-red-700"            
+          >
             Contratar Ahora
           </Button>
         </div>
