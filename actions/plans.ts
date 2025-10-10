@@ -36,7 +36,7 @@ export async function updatePlan(id: string, plan: TablesUpdate<'plans'>): Promi
 }
 
 export async function deletePlan(id: string): Promise<boolean> {
-  // todo: check if the plan is used in any subscriptions before deleting
+  // TODO: check if the plan is used in any subscriptions before deleting
   const { error } = await supabase.from('plans').delete().eq('id', id)
   if (error) throw new Error(error.message)
   revalidatePath('/plans', 'layout')
