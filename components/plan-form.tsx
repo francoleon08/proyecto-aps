@@ -1,6 +1,10 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { createPlan, updatePlan } from '@/actions/plans'
+import toast from 'react-hot-toast'
+import { Tables } from '@/types/database'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -8,9 +12,6 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Switch } from '@/components/ui/switch'
 import { Plus, X } from 'lucide-react'
-import { useRouter } from 'next/navigation'
-import { createPlan, updatePlan } from '@/actions/plans'
-import { Tables } from '@/types/database'
 
 interface PlanFormProps {
   initialData?: Tables<'plans'>
@@ -66,27 +67,29 @@ export function PlanForm({ initialData, isEditing = false }: PlanFormProps) {
     }
     if (isEditing) {
       if (!initialData?.id) {
-        // TODO: handle error
+        toast.error('Invalid plan ID')
         setLoading(false)
         return
       }
       updatePlan(initialData.id, plan)
         .then(() => {
-          // TODO: show success notification
+          toast.success('Plan updated successfully')
           router.push('/plans')
         })
         .catch((error) => {
-          // TODO: handle error (e.g., show a notification)
+          toast.error('There was an error updating the plan')
+          console.error(error)
           setLoading(false)
         })
     } else {
       createPlan(plan)
         .then(() => {
-          // TODO: show success notification
+          toast.success('Plan created successfully')
           router.push('/plans')
         })
         .catch((error) => {
-          // TODO: handle error (e.g., show a notification)
+          toast.error('There was an error creating the plan')
+          console.error(error)
           setLoading(false)
         })
     }

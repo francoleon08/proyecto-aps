@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { deletePlan, getPlans } from '@/actions/plans'
+import toast from 'react-hot-toast'
 import { Tables } from '@/types/database'
 import { DashboardLayout } from '@/components/dashboard-layout'
 import { Button } from '@/components/ui/button'
@@ -26,14 +27,14 @@ export default function PlansListPage() {
     // todo: ask for confirmation (e.g., show modal)
     deletePlan(id)
       .then((deleted) => {
-        //todo: add toast notification
-        if (deleted) router.refresh()
-        else {
-          // todo: handle not deleted (e.g., show toast notification)
-        }
+        if (deleted) {
+          toast.success('Plan deleted successfully')
+          router.refresh()
+        } else toast.error('Cannot delete plan with active subscriptions')
       })
       .catch((error) => {
-        // todo: handle error (e.g., show toast notification)
+        console.error(error)
+        toast.error('There was an error deleting the plan')
       })
   }
 
