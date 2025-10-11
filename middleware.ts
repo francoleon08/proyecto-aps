@@ -30,6 +30,19 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(url)
   }
 
+  // si la ruta es un dashboard pero no coincide con el tipo de usuario,
+  // entonces redirigirlo al dashboard que sí le corresponde
+  const isDashboard = pathname.startsWith('/dashboard')
+  if (isDashboard) {
+    const userType = getCurrentUser()?.user_type;
+    const dashboardType = pathname.split('/')[2];
+    if (dashboardType !== userType) {
+      const url = request.nextUrl.clone();
+      url.pathname = pathname.replace(`/dashboard/${dashboardType}`, `/dashboard/${userType}`);
+      return NextResponse.redirect(url);
+    }
+  }
+
   // si la ruta es sólo para admins y el usuario no tiene ese rol, redirigir a no-autorizado
   const isAdminRoute = pathname.includes('/admin') || pathname.startsWith('/plans')
   if (isAdminRoute && !hasRole('admin')) {
