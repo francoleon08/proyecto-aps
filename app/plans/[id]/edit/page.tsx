@@ -25,7 +25,7 @@ export default function EditPlanPage() {
   if (!plan) return <></>
   else
     return (
-      <DashboardLayout title={''} description={''}>
+      <DashboardLayout title={'Gestión de Planes'} description={'Administrar planes del sistema'}>
         <div className="p-8">
           <div className="mb-8">
             <Link href="/plans">

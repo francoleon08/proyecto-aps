@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { DashboardLayout } from "@/components/dashboard-layout";
 // Remove direct import of server functions
 import { DashboardMetrics, RecentSession } from "@/types/custom";
@@ -11,6 +12,7 @@ export default function AdminDashboard() {
   const [recentSessions, setRecentSessions] = useState<RecentSession[]>([]);
   const [showUserManagement, setShowUserManagement] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchDashboardData = async () => {
@@ -223,6 +225,12 @@ export default function AdminDashboard() {
               className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
             >
               Gestionar Usuarios
+            </button>
+            <button
+              onClick={() => router.push('/plans')}
+              className="bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
+            >
+              Gestionar Planes
             </button>
             <button className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors">
               Ver Reportes
