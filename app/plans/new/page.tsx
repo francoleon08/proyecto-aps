@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 
 export default function NewPlanPage() {
   return (
-    <DashboardLayout title={''} description={''}>
+    <DashboardLayout title={'Gestión de Planes'} description={'Administrar planes del sistema'}>
       <div className="p-8">
         <div className="mb-8">
           <Link href="/plans">

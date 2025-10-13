@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Badge } from '@/components/ui/badge'
-import { Plus, Pencil, Trash2, Eye } from 'lucide-react'
+import { Plus, Pencil, Trash2, Eye, ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
 import { ConfirmDialog } from '@/components/confirm-dialog'
 
@@ -41,8 +41,14 @@ export default function PlansListPage() {
   if (!plans) return <></>
   else
     return (
-      <DashboardLayout title={''} description={''}>
+      <DashboardLayout title={'Gestión de Planes'} description={'Administrar planes del sistema'}>
         <div className="p-8">
+          <Link href="/dashboard/admin">
+            <Button variant="ghost" className="mb-4 text-muted-foreground hover:text-foreground">
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Back to Dashboard
+            </Button>
+          </Link>
           <div className="flex items-center justify-between mb-8">
             <div>
               <h1 className="text-3xl font-bold text-foreground mb-2">Insurance Plans</h1>
