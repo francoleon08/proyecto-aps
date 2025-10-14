@@ -36,7 +36,7 @@ export async function middleware(request: NextRequest) {
   if (isDashboard) {
     const userType = getCurrentUser()?.user_type;
     const dashboardType = pathname.split('/')[2];
-    if (dashboardType !== userType) {
+    if (dashboardType && dashboardType !== userType) {
       const url = request.nextUrl.clone();
       url.pathname = pathname.replace(`/dashboard/${dashboardType}`, `/dashboard/${userType}`);
       return NextResponse.redirect(url);
