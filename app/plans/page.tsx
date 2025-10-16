@@ -28,13 +28,13 @@ export default function PlansListPage() {
     deletePlan(id)
       .then((deleted) => {
         if (deleted) {
-          toast.success('Plan deleted successfully')
+          toast.success('El plan ha sido eliminado correctamente')
           router.refresh()
-        } else toast.error('Cannot delete plan with active subscriptions')
+        } else toast.error('No se puede eliminar el plan porque está siendo usado en una suscripción')
       })
       .catch((error) => {
         console.error(error)
-        toast.error('There was an error deleting the plan')
+        toast.error('Ocurrió un error eliminado el plan')
       })
   }
 
