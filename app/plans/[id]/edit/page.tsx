@@ -31,11 +31,11 @@ export default function EditPlanPage() {
             <Link href="/plans">
               <Button variant="ghost" className="mb-4 text-muted-foreground hover:text-foreground">
                 <ArrowLeft className="h-4 w-4 mr-2" />
-                Back to Plans
+                Volver a los Planes
               </Button>
             </Link>
-            <h1 className="text-3xl font-bold text-foreground mb-2">Edit Plan</h1>
-            <p className="text-muted-foreground">Update the details of this insurance plan</p>
+            <h1 className="text-3xl font-bold text-foreground mb-2">Editar el plan</h1>
+            <p className="text-muted-foreground">Actualiza los detalles del plan de póliza</p>
           </div>
 
           <PlanForm initialData={plan} isEditing />

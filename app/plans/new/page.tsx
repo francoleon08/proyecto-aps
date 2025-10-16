@@ -10,20 +10,13 @@ export default function NewPlanPage() {
       <div className="p-8">
         <div className="mb-8">
           <Link href="/plans">
-            <Button
-              variant="ghost"
-              className="mb-4 text-muted-foreground hover:text-foreground"
-            >
+            <Button variant="ghost" className="mb-4 text-muted-foreground hover:text-foreground">
               <ArrowLeft className="h-4 w-4 mr-2" />
-              Back to Plans
+              Volver a los Planes
             </Button>
           </Link>
-          <h1 className="text-3xl font-bold text-foreground mb-2">
-            Create New Plan
-          </h1>
-          <p className="text-muted-foreground">
-            Add a new insurance plan to your offerings
-          </p>
+          <h1 className="text-3xl font-bold text-foreground mb-2">Crear un nuevo plan</h1>
+          <p className="text-muted-foreground">Agrega un nuevo plan de póliza a tus ofertas</p>
         </div>
 
         <PlanForm />

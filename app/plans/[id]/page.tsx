@@ -32,18 +32,18 @@ export default function ViewPlanPage() {
             <Link href="/plans">
               <Button variant="ghost" className="mb-4 text-muted-foreground hover:text-foreground">
                 <ArrowLeft className="h-4 w-4 mr-2" />
-                Back to Plans
+                Volver a los Planes
               </Button>
             </Link>
             <div className="flex items-center justify-between">
               <div>
                 <h1 className="text-3xl font-bold text-foreground mb-2">{plan.category} Plan</h1>
-                <p className="text-muted-foreground">View detailed information about this insurance plan</p>
+                <p className="text-muted-foreground">Ver información detallada acerca de este plan de póliza</p>
               </div>
               <Link href={`/plans/${plan.id}/edit`}>
                 <Button className="bg-primary text-primary-foreground hover:bg-primary/90">
                   <Pencil className="h-4 w-4 mr-2" />
-                  Edit Plan
+                  Editar el plan
                 </Button>
               </Link>
             </div>
@@ -54,7 +54,7 @@ export default function ViewPlanPage() {
             <Card className="bg-card border-border">
               <CardHeader>
                 <div className="flex items-center justify-between">
-                  <CardTitle className="text-card-foreground">Plan Overview</CardTitle>
+                  <CardTitle className="text-card-foreground">Detalles del Plan</CardTitle>
                   <Badge
                     variant={plan.is_active ? 'default' : 'secondary'}
                     className={
@@ -67,14 +67,18 @@ export default function ViewPlanPage() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
-                  <label className="text-sm font-medium text-muted-foreground">Category</label>
+                  <label className="text-sm font-medium text-muted-foreground">Categoria</label>
                   <p className="text-lg font-semibold text-card-foreground mt-1">{plan.category}</p>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-muted-foreground">Base Price</label>
+                  <label className="text-sm font-medium text-muted-foreground">Precio Base</label>
                   <p className="text-lg font-semibold text-card-foreground mt-1">
                     ${plan.base_price.toFixed(2)} / month
                   </p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-muted-foreground">Cobertura General</label>
+                  <p className="text-lg font-semibold text-card-foreground mt-1">${plan.general_coverage.toFixed(2)}</p>
                 </div>
               </CardContent>
             </Card>
@@ -82,16 +86,16 @@ export default function ViewPlanPage() {
             {plan.description && (
               <Card className="bg-card border-border">
                 <CardHeader>
-                  <CardTitle className="text-card-foreground">Coverage Descriptions</CardTitle>
+                  <CardTitle className="text-card-foreground">Descripciones de Cobertura</CardTitle>
                   <CardDescription className="text-muted-foreground">
-                    Detailed coverage information for each category
+                    Información detallada de cada cobertura
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
                   <div>
                     <h3 className="text-sm font-semibold text-card-foreground mb-2 flex items-center gap-2">
                       <span className="h-2 w-2 rounded-full bg-primary"></span>
-                      Home Coverage
+                      Cobertura Hogar
                     </h3>
                     <p className="text-muted-foreground leading-relaxed">
                       {(plan.description as { home: string }).home}
@@ -100,7 +104,7 @@ export default function ViewPlanPage() {
                   <div>
                     <h3 className="text-sm font-semibold text-card-foreground mb-2 flex items-center gap-2">
                       <span className="h-2 w-2 rounded-full bg-primary"></span>
-                      Person Coverage
+                      Cobertura Persona
                     </h3>
                     <p className="text-muted-foreground leading-relaxed">
                       {(plan.description as { person: string }).person}
@@ -109,7 +113,7 @@ export default function ViewPlanPage() {
                   <div>
                     <h3 className="text-sm font-semibold text-card-foreground mb-2 flex items-center gap-2">
                       <span className="h-2 w-2 rounded-full bg-primary"></span>
-                      Vehicle Coverage
+                      Cobertura Auto
                     </h3>
                     <p className="text-muted-foreground leading-relaxed">
                       {(plan.description as { vehicle: string }).vehicle}
@@ -121,9 +125,9 @@ export default function ViewPlanPage() {
             {/* Benefits */}
             <Card className="bg-card border-border">
               <CardHeader>
-                <CardTitle className="text-card-foreground">Plan Benefits</CardTitle>
+                <CardTitle className="text-card-foreground">Beneficios del Plan</CardTitle>
                 <CardDescription className="text-muted-foreground">
-                  Additional benefits included with this plan
+                  Beneficios adicionales incluidos en el plan
                 </CardDescription>
               </CardHeader>
               <CardContent>
