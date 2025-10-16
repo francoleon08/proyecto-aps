@@ -1,4 +1,3 @@
-// TODO: add form validation
 'use client'
 
 import { useState } from 'react'
@@ -33,7 +32,7 @@ export function PlanForm({ initialData, isEditing = false }: PlanFormProps) {
     (initialData && (initialData?.description as { vehicle: string }).vehicle) || ''
   )
   const [benefits, setBenefits] = useState<string[]>((initialData && (initialData?.benefits as string[])) || [''])
-  const [basePrice, setBasePrice] = useState(initialData?.base_price?.toString() || '')
+  const [basePrice, setBasePrice] = useState(initialData?.base_price?.toString() || '0')
   const [isActive, setIsActive] = useState(initialData?.is_active ?? true)
   const [loading, setLoading] = useState(false)
 
@@ -101,7 +100,13 @@ export function PlanForm({ initialData, isEditing = false }: PlanFormProps) {
   }
 
   return (
-    <div className="space-y-6">
+    <form
+      className="space-y-6"
+      onSubmit={(e) => {
+        e.preventDefault()
+        handleSave()
+      }}
+    >
       {/* Basic Information */}
       <Card className="bg-card border-border">
         <CardHeader>
@@ -119,6 +124,7 @@ export function PlanForm({ initialData, isEditing = false }: PlanFormProps) {
               id="category"
               placeholder="e.g., Premium, Elite, Basic"
               value={category}
+              required
               onChange={(e) => setCategory(e.target.value)}
               className="bg-background border-input text-foreground"
             />
@@ -130,8 +136,11 @@ export function PlanForm({ initialData, isEditing = false }: PlanFormProps) {
             <Input
               id="general_coverage"
               type="number"
+              step="0.01"
               placeholder="0.00"
               value={generalCoverage}
+              min="0"
+              required
               onChange={(e) => setGeneralCoverage(Number(e.target.value))}
               className="bg-background border-input text-foreground"
             />
@@ -145,7 +154,9 @@ export function PlanForm({ initialData, isEditing = false }: PlanFormProps) {
               type="number"
               step="0.01"
               placeholder="0.00"
-              value={basePrice}
+              value={basePrice || 0}
+              min="0"
+              required
               onChange={(e) => setBasePrice(e.target.value)}
               className="bg-background border-input text-foreground"
             />
@@ -179,6 +190,7 @@ export function PlanForm({ initialData, isEditing = false }: PlanFormProps) {
               id="homeDescription"
               placeholder="Describe the home coverage details..."
               value={homeDescription}
+              required
               onChange={(e) => setHomeDescription(e.target.value)}
               rows={3}
               className="bg-background border-input text-foreground resize-none"
@@ -192,6 +204,7 @@ export function PlanForm({ initialData, isEditing = false }: PlanFormProps) {
               id="personDescription"
               placeholder="Describe the personal coverage details..."
               value={personDescription}
+              required
               onChange={(e) => setPersonDescription(e.target.value)}
               rows={3}
               className="bg-background border-input text-foreground resize-none"
@@ -205,6 +218,7 @@ export function PlanForm({ initialData, isEditing = false }: PlanFormProps) {
               id="vehicleDescription"
               placeholder="Describe the vehicle coverage details..."
               value={vehicleDescription}
+              required
               onChange={(e) => setVehicleDescription(e.target.value)}
               rows={3}
               className="bg-background border-input text-foreground resize-none"
@@ -225,6 +239,7 @@ export function PlanForm({ initialData, isEditing = false }: PlanFormProps) {
               <Input
                 placeholder="Enter a benefit..."
                 value={benefit}
+                required
                 onChange={(e) => updateBenefit(index, e.target.value)}
                 className="bg-background border-input text-foreground"
               />
@@ -256,11 +271,7 @@ export function PlanForm({ initialData, isEditing = false }: PlanFormProps) {
 
       {/* Actions */}
       <div className="flex items-center gap-4">
-        <Button
-          onClick={handleSave}
-          className="bg-primary text-primary-foreground hover:bg-primary/90"
-          disabled={loading}
-        >
+        <Button type="submit" className="bg-primary text-primary-foreground hover:bg-primary/90" disabled={loading}>
           {isEditing ? 'Update Plan' : 'Create Plan'}
         </Button>
         <Button
@@ -271,6 +282,6 @@ export function PlanForm({ initialData, isEditing = false }: PlanFormProps) {
           Cancel
         </Button>
       </div>
-    </div>
+    </form>
   )
 }
