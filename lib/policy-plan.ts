@@ -84,12 +84,13 @@ const plansMock: PlanOption[] = [
 
 export async function getQuoteData(): Promise<QuoteData> {
   //TODO: integrar con backend -> traer solamente los precios base y asignarselos a basePrices
-  //Ej: basePrices: await fetch('/api/base-prices').then(res => res.json())
-  const basePrices = {
-    Premium: 1500,
-    Elite: 1000,
-    Basic: 500,
-  }
+  //Ej: const basePrices: await fetch('/api/base-prices').then(res => res.json())
+  
+  const res = await fetch('/api/plans/base-prices')
+  if (!res.ok) throw new Error('Failed to fetch active plans')
+  const basePrices = await res.json()
+
+
 
   const data: QuoteData = {
     insuranceType: null,
@@ -113,7 +114,7 @@ export async function getMultiplierForInsuranceType(type: InsuranceType): Promis
 }
 
 export async function getAvailablePlans(): Promise<PlanOption[]> {
-  const res = await fetch('/api/plans/active', { cache: 'no-store' })
+  const res = await fetch('/api/plans/active')
   if (!res.ok) throw new Error('Failed to fetch active plans')
   const plans: Tables<'plans'>[] = await res.json()
 
