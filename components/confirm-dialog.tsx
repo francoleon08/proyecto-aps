@@ -29,7 +29,6 @@ export function ConfirmDialog({
     setLoading(true)
     try {
       await onConfirm()
-      toast.success('Action completed!')
       setOpen(false)
     } catch (error) {
       toast.error('Something went wrong.')

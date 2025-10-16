@@ -28,13 +28,13 @@ export default function PlansListPage() {
     deletePlan(id)
       .then((deleted) => {
         if (deleted) {
-          toast.success('Plan deleted successfully')
+          toast.success('El plan ha sido eliminado correctamente')
           router.refresh()
-        } else toast.error('Cannot delete plan with active subscriptions')
+        } else toast.error('No se puede eliminar el plan porque está siendo usado en una suscripción')
       })
       .catch((error) => {
         console.error(error)
-        toast.error('There was an error deleting the plan')
+        toast.error('Ocurrió un error eliminado el plan')
       })
   }
 
@@ -46,37 +46,37 @@ export default function PlansListPage() {
           <Link href="/dashboard/admin">
             <Button variant="ghost" className="mb-4 text-muted-foreground hover:text-foreground">
               <ArrowLeft className="h-4 w-4 mr-2" />
-              Back to Dashboard
+              Volver al Dashboard
             </Button>
           </Link>
           <div className="flex items-center justify-between mb-8">
             <div>
-              <h1 className="text-3xl font-bold text-foreground mb-2">Insurance Plans</h1>
-              <p className="text-muted-foreground">Manage your global insurance plan offerings</p>
+              <h1 className="text-3xl font-bold text-foreground mb-2">Planes de Póliza</h1>
+              <p className="text-muted-foreground">Administre los planes de póliza ofrecidos</p>
             </div>
             <Link href="/plans/new">
               <Button className="bg-primary text-primary-foreground hover:bg-primary/90">
                 <Plus className="h-4 w-4 mr-2" />
-                New Plan
+                Nuevo Plan
               </Button>
             </Link>
           </div>
 
           <Card className="bg-card border-border">
             <CardHeader>
-              <CardTitle className="text-card-foreground">All Plans</CardTitle>
+              <CardTitle className="text-card-foreground">Todos los Planes</CardTitle>
               <CardDescription className="text-muted-foreground">
-                View and manage all insurance plans in the system
+                Visualice y maneje todos sus planes de póliza en el sistema
               </CardDescription>
             </CardHeader>
             <CardContent>
               <Table>
                 <TableHeader>
                   <TableRow className="border-border hover:bg-transparent">
-                    <TableHead className="text-muted-foreground">Category</TableHead>
-                    <TableHead className="text-muted-foreground">Base Price</TableHead>
-                    <TableHead className="text-muted-foreground">Status</TableHead>
-                    <TableHead className="text-right text-muted-foreground">Actions</TableHead>
+                    <TableHead className="text-muted-foreground">Categoría</TableHead>
+                    <TableHead className="text-muted-foreground">Precio Base</TableHead>
+                    <TableHead className="text-muted-foreground">Estado</TableHead>
+                    <TableHead className="text-right text-muted-foreground">Acciones</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -129,9 +129,10 @@ export default function PlansListPage() {
                                 <span className="sr-only">Delete</span>
                               </Button>
                             }
-                            title="Delete Plan?"
-                            description="Are you sure you want to delete this plan? This action cannot be undone."
-                            confirmText="Delete"
+                            title="¿Estas seguro de eliminar el plan? "
+                            description="Esta acción no podrá ser revertida."
+                            confirmText="Eliminar"
+                            cancelText="Cancelar"
                             onConfirm={async () => handleDelete(plan.id)}
                           />
                         </div>

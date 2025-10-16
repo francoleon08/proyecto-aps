@@ -163,9 +163,9 @@ export function UserManagement({ onBack }: UserManagementProps) {
   };
 
   return (
-    <div className="space-y-6">
+    <div>
       {/* Header */}
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center mb-5">
         <div>
           <h2 className="text-2xl font-bold text-gray-900">Gestión de Usuarios</h2>
           <p className="text-gray-600">Administrar usuarios del sistema</p>
@@ -191,7 +191,7 @@ export function UserManagement({ onBack }: UserManagementProps) {
       )}
 
       {/* Filters and Actions */}
-      <div className="bg-white shadow rounded-lg p-6">
+      <div className="bg-white shadow rounded-lg p-6 my-5">
         <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
           <div className="flex flex-col sm:flex-row gap-4 flex-1">
             {/* Search */}
@@ -323,7 +323,7 @@ export function UserManagement({ onBack }: UserManagementProps) {
       )}
 
       {/* Users Table */}
-      <div className="bg-white shadow rounded-lg overflow-hidden">
+      <div className="bg-white shadow rounded-lg overflow-hidden my-5">
         {isLoading ? (
           <div className="flex items-center justify-center h-64">
             <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-indigo-600"></div>

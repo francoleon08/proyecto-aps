@@ -1,4 +1,3 @@
-// TODO: add form validation
 'use client'
 
 import { useState } from 'react'
@@ -33,7 +32,7 @@ export function PlanForm({ initialData, isEditing = false }: PlanFormProps) {
     (initialData && (initialData?.description as { vehicle: string }).vehicle) || ''
   )
   const [benefits, setBenefits] = useState<string[]>((initialData && (initialData?.benefits as string[])) || [''])
-  const [basePrice, setBasePrice] = useState(initialData?.base_price?.toString() || '')
+  const [basePrice, setBasePrice] = useState(initialData?.base_price?.toString() || '0')
   const [isActive, setIsActive] = useState(initialData?.is_active ?? true)
   const [loading, setLoading] = useState(false)
 
@@ -68,28 +67,28 @@ export function PlanForm({ initialData, isEditing = false }: PlanFormProps) {
     }
     if (isEditing) {
       if (!initialData?.id) {
-        toast.error('Invalid plan ID')
+        toast.error('El id del plan es inválido')
         setLoading(false)
         return
       }
       updatePlan(initialData.id, plan)
         .then(() => {
-          toast.success('Plan updated successfully')
+          toast.success('El plan ha sido actualizado correctamente')
           router.push('/plans')
         })
         .catch((error) => {
-          toast.error('There was an error updating the plan')
+          toast.error('Ocurrió un error actualizando los datos del plan')
           console.error(error)
           setLoading(false)
         })
     } else {
       createPlan(plan)
         .then(() => {
-          toast.success('Plan created successfully')
+          toast.success('El plan ha sido creado correctamente')
           router.push('/plans')
         })
         .catch((error) => {
-          toast.error('There was an error creating the plan')
+          toast.error('Ocurrió un error creando el plan')
           console.error(error)
           setLoading(false)
         })
@@ -101,51 +100,63 @@ export function PlanForm({ initialData, isEditing = false }: PlanFormProps) {
   }
 
   return (
-    <div className="space-y-6">
+    <form
+      className="space-y-6"
+      onSubmit={(e) => {
+        e.preventDefault()
+        handleSave()
+      }}
+    >
       {/* Basic Information */}
       <Card className="bg-card border-border">
         <CardHeader>
-          <CardTitle className="text-card-foreground">Basic Information</CardTitle>
+          <CardTitle className="text-card-foreground">Información Básica</CardTitle>
           <CardDescription className="text-muted-foreground">
-            Enter the plan category and pricing details
+            Cargar la categoria y los precios del plan
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="category" className="text-card-foreground">
-              Category
+              Categoria
             </Label>
             <Input
               id="category"
               placeholder="e.g., Premium, Elite, Basic"
               value={category}
+              required
               onChange={(e) => setCategory(e.target.value)}
               className="bg-background border-input text-foreground"
             />
           </div>
           <div className="space-y-2">
             <Label htmlFor="general_coverage" className="text-card-foreground">
-              General Coverage
+              Cobertura General
             </Label>
             <Input
               id="general_coverage"
               type="number"
+              step="0.01"
               placeholder="0.00"
               value={generalCoverage}
+              min="0"
+              required
               onChange={(e) => setGeneralCoverage(Number(e.target.value))}
               className="bg-background border-input text-foreground"
             />
           </div>
           <div className="space-y-2">
             <Label htmlFor="basePrice" className="text-card-foreground">
-              Base Price (per month)
+              Precio Base (por mes)
             </Label>
             <Input
               id="basePrice"
               type="number"
               step="0.01"
               placeholder="0.00"
-              value={basePrice}
+              value={basePrice || 0}
+              min="0"
+              required
               onChange={(e) => setBasePrice(e.target.value)}
               className="bg-background border-input text-foreground"
             />
@@ -153,9 +164,9 @@ export function PlanForm({ initialData, isEditing = false }: PlanFormProps) {
           <div className="flex items-center justify-between">
             <div className="space-y-0.5">
               <Label htmlFor="active" className="text-card-foreground">
-                Active Status
+                Estado Activo
               </Label>
-              <p className="text-sm text-muted-foreground">Make this plan available to customers</p>
+              <p className="text-sm text-muted-foreground">Habilita este plan para los clientes</p>
             </div>
             <Switch id="active" checked={isActive} onCheckedChange={setIsActive} />
           </div>
@@ -165,20 +176,21 @@ export function PlanForm({ initialData, isEditing = false }: PlanFormProps) {
       {/* Coverage Descriptions */}
       <Card className="bg-card border-border">
         <CardHeader>
-          <CardTitle className="text-card-foreground">Coverage Descriptions</CardTitle>
+          <CardTitle className="text-card-foreground">Descripción de Coberturas</CardTitle>
           <CardDescription className="text-muted-foreground">
-            Provide detailed descriptions for each coverage type
+            Cargar descripciones detalladas para cada tipo de cobertura
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="space-y-2">
             <Label htmlFor="homeDescription" className="text-card-foreground">
-              Home Description
+              Descripción para Hogares
             </Label>
             <Textarea
               id="homeDescription"
-              placeholder="Describe the home coverage details..."
+              placeholder="Describe los detalles de la cobertura para hogares..."
               value={homeDescription}
+              required
               onChange={(e) => setHomeDescription(e.target.value)}
               rows={3}
               className="bg-background border-input text-foreground resize-none"
@@ -186,12 +198,13 @@ export function PlanForm({ initialData, isEditing = false }: PlanFormProps) {
           </div>
           <div className="space-y-2">
             <Label htmlFor="personDescription" className="text-card-foreground">
-              Person Description
+              Descripción para Personas
             </Label>
             <Textarea
               id="personDescription"
-              placeholder="Describe the personal coverage details..."
+              placeholder="Describe los detalles de la cobertura para personas..."
               value={personDescription}
+              required
               onChange={(e) => setPersonDescription(e.target.value)}
               rows={3}
               className="bg-background border-input text-foreground resize-none"
@@ -199,12 +212,13 @@ export function PlanForm({ initialData, isEditing = false }: PlanFormProps) {
           </div>
           <div className="space-y-2">
             <Label htmlFor="vehicleDescription" className="text-card-foreground">
-              Vehicle Description
+              Descripción para Autos
             </Label>
             <Textarea
               id="vehicleDescription"
-              placeholder="Describe the vehicle coverage details..."
+              placeholder="Describe los deatlles de la cobertura para autos..."
               value={vehicleDescription}
+              required
               onChange={(e) => setVehicleDescription(e.target.value)}
               rows={3}
               className="bg-background border-input text-foreground resize-none"
@@ -216,15 +230,18 @@ export function PlanForm({ initialData, isEditing = false }: PlanFormProps) {
       {/* Benefits */}
       <Card className="bg-card border-border">
         <CardHeader>
-          <CardTitle className="text-card-foreground">Plan Benefits</CardTitle>
-          <CardDescription className="text-muted-foreground">Add benefits included with this plan</CardDescription>
+          <CardTitle className="text-card-foreground">Beneficios del Plan</CardTitle>
+          <CardDescription className="text-muted-foreground">
+            Agregar los beneficios incluidos en el plan
+          </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           {benefits.map((benefit, index) => (
             <div key={index} className="flex items-center gap-2">
               <Input
-                placeholder="Enter a benefit..."
+                placeholder="Ingresa un beneficio..."
                 value={benefit}
+                required
                 onChange={(e) => updateBenefit(index, e.target.value)}
                 className="bg-background border-input text-foreground"
               />
@@ -249,28 +266,24 @@ export function PlanForm({ initialData, isEditing = false }: PlanFormProps) {
             className="w-full border-border text-foreground hover:bg-accent bg-transparent"
           >
             <Plus className="h-4 w-4 mr-2" />
-            Add Benefit
+            Agregar Beneficio
           </Button>
         </CardContent>
       </Card>
 
       {/* Actions */}
       <div className="flex items-center gap-4">
-        <Button
-          onClick={handleSave}
-          className="bg-primary text-primary-foreground hover:bg-primary/90"
-          disabled={loading}
-        >
-          {isEditing ? 'Update Plan' : 'Create Plan'}
+        <Button type="submit" className="bg-primary text-primary-foreground hover:bg-primary/90" disabled={loading}>
+          {isEditing ? 'Actualizar Plan' : 'Crear Plan'}
         </Button>
         <Button
           variant="outline"
           onClick={handleCancel}
           className="border-border text-foreground hover:bg-accent bg-transparent"
         >
-          Cancel
+          Cancelar
         </Button>
       </div>
-    </div>
+    </form>
   )
 }

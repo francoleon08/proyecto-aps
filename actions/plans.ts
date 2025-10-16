@@ -36,9 +36,16 @@ export async function updatePlan(id: string, plan: TablesUpdate<'plans'>): Promi
 }
 
 export async function deletePlan(id: string): Promise<boolean> {
-  // TODO: check if the plan is used in any subscriptions before deleting
-  const { error } = await supabase.from('plans').delete().eq('id', id)
-  if (error) throw new Error(error.message)
+  const { data: policy, error: error_policy } = await supabase
+    .from('contracted_policy')
+    .select('id')
+    .eq('policy_type_id', id)
+    .limit(1)
+  if (error_policy) throw new Error(error_policy.message)
+  if (policy && policy.length > 0) return false
+
+  const { error: error_plan } = await supabase.from('plans').delete().eq('id', id)
+  if (error_plan) throw new Error(error_plan.message)
   revalidatePath('/plans', 'layout')
   return true
 }
