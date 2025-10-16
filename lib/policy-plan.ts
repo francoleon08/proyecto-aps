@@ -1,3 +1,7 @@
+import { getActivePlans, getBasePrices } from '@/actions/plans'
+import { Enums, Tables } from '@/types/database'
+
+
 export type InsuranceType = 'life' | 'home' | 'vehicle' | null
 export type PolicyCategory = 'Premium' | 'Elite' | 'Basic'
 export type ClientType = 'person' | 'business'
@@ -27,11 +31,7 @@ export interface QuoteData {
   multiplier: number
   policyData: LifePolicyData | HomePolicyData | VehiclePolicyData | null
   selectedPlan: PolicyCategory | null
-  basePrices: {
-    Premium: number
-    Elite: number
-    Basic: number
-  }
+  basePrices: Record<string, number>
 }
 
 export const initialQuoteDataMock: QuoteData = {
@@ -105,10 +105,23 @@ export async function getQuoteData(): Promise<QuoteData> {
 export async function getMultiplierForInsuranceType(type: InsuranceType): Promise<number> {
   //TODO: integrar con backend. En base a un tipo de seguro, traer el multiplicador correspondiente
   //Ej: return await fetch(`/api/multiplier?type=${type}`).then(res => res.json())
+
+
+
+
   return type === 'life' ? 1.2 : type === 'home' ? 1.3 : type === 'vehicle' ? 1.5 : 1
 }
 
 export async function getAvailablePlans(): Promise<PlanOption[]> {
-  //TODO: integrar con backend
-  return plansMock
+  const res = await fetch('/api/plans/active', { cache: 'no-store' })
+  if (!res.ok) throw new Error('Failed to fetch active plans')
+  const plans: Tables<'plans'>[] = await res.json()
+
+  const planOptions: PlanOption[] = plans.map(plan => ({
+    name: plan.category as Enums<'policy_type_enum'>,
+    features: plan.benefits as string[],
+    recommended: plan.category === 'Elite',
+  }))
+
+  return planOptions
 }

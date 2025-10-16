@@ -15,6 +15,12 @@ export async function getPlans(): Promise<Tables<'plans'>[]> {
   return data || []
 }
 
+export async function getActivePlans(): Promise<Tables<'plans'>[]>{
+  const { data, error } = await supabase.from('plans').select('*').eq('is_active', true)
+  if (error) throw new Error(error.message)
+  return data || []
+}
+
 export async function getPlanById(id: string): Promise<Tables<'plans'> | null> {
   const { data, error } = await supabase.from('plans').select('*').eq('id', id).single()
   if (error) throw new Error(error.message)
@@ -48,4 +54,20 @@ export async function deletePlan(id: string): Promise<boolean> {
   if (error_plan) throw new Error(error_plan.message)
   revalidatePath('/plans', 'layout')
   return true
+}
+
+export async function getBasePrices(): Promise<Record<string, number>> {
+  const { data: plans, error } = await supabase
+    .from('plans')
+    .select('category, base_price')
+    .eq('is_active', true)
+
+  if (error) throw new Error(error.message)
+  if (!plans || plans.length === 0) throw new Error('No plans found')
+
+  const basePrices = Object.fromEntries(
+    plans.map(plan => [plan.category, plan.base_price])
+  )
+
+  return basePrices
 }
