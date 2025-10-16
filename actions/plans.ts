@@ -71,3 +71,18 @@ export async function getBasePrices(): Promise<Record<string, number>> {
 
   return basePrices
 }
+
+export async function getPlanMultiplier(type: string): Promise<number | null> {
+  const { data, error } = await supabase
+    .from('plans')
+    .select('base_price')
+    .eq('category', type)
+    .single()
+
+  if (error) {
+    console.error('[getPlanMultiplier] Error:', error)
+    return null
+  }
+  //TODO: Falta crear la tabla/columna que mantenga el multiplicador asociado a un plan.
+  return data.base_price/1000
+}

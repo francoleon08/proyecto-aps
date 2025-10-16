@@ -34,63 +34,16 @@ export interface QuoteData {
   basePrices: Record<string, number>
 }
 
-export const initialQuoteDataMock: QuoteData = {
-  insuranceType: null,
-  clientType: 'person',
-  multiplier: 1,
-  policyData: null,
-  selectedPlan: null,
-  basePrices: {
-    Premium: 1500,
-    Elite: 1000,
-    Basic: 500,
-  },
-}
-
 export interface PlanOption {
   name: PolicyCategory
   features: string[]
   recommended?: boolean
 }
 
-const plansMock: PlanOption[] = [
-  {
-    name: 'Basic',
-    features: ['Cobertura básica', 'Asistencia 24/7', 'Deducible estándar', 'Renovación anual'],
-  },
-  {
-    name: 'Elite',
-    features: [
-      'Cobertura ampliada',
-      'Asistencia prioritaria',
-      'Deducible reducido',
-      'Beneficios adicionales',
-      'Renovación automática',
-    ],
-    recommended: true,
-  },
-  {
-    name: 'Premium',
-    features: [
-      'Cobertura total',
-      'Asistencia VIP',
-      'Sin deducible',
-      'Todos los beneficios',
-      'Renovación automática',
-      'Asesor personal',
-    ],
-  },
-]
-
 export async function getQuoteData(): Promise<QuoteData> {
-  //TODO: integrar con backend -> traer solamente los precios base y asignarselos a basePrices
-  //Ej: const basePrices: await fetch('/api/base-prices').then(res => res.json())
-  
   const res = await fetch('/api/plans/base-prices')
   if (!res.ok) throw new Error('Failed to fetch active plans')
   const basePrices = await res.json()
-
-
 
   const data: QuoteData = {
     insuranceType: null,
@@ -104,13 +57,11 @@ export async function getQuoteData(): Promise<QuoteData> {
 }
 
 export async function getMultiplierForInsuranceType(type: InsuranceType): Promise<number> {
-  //TODO: integrar con backend. En base a un tipo de seguro, traer el multiplicador correspondiente
-  //Ej: return await fetch(`/api/multiplier?type=${type}`).then(res => res.json())
+  const res = await fetch('/api/plans/multiplier?type=${type}')
+  if (!res.ok) throw new Error('Failed to fetch plan multiplier')
+  const multiplier = await res.json()
 
-
-
-
-  return type === 'life' ? 1.2 : type === 'home' ? 1.3 : type === 'vehicle' ? 1.5 : 1
+  return multiplier
 }
 
 export async function getAvailablePlans(): Promise<PlanOption[]> {
