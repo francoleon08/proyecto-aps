@@ -1,3 +1,7 @@
+import { getActivePlans, getBasePrices } from '@/actions/plans'
+import { Enums, Tables } from '@/types/database'
+
+
 export type InsuranceType = 'life' | 'home' | 'vehicle' | null
 export type PolicyCategory = 'Premium' | 'Elite' | 'Basic'
 export type ClientType = 'person' | 'business'
@@ -27,24 +31,7 @@ export interface QuoteData {
   multiplier: number
   policyData: LifePolicyData | HomePolicyData | VehiclePolicyData | null
   selectedPlan: PolicyCategory | null
-  basePrices: {
-    Premium: number
-    Elite: number
-    Basic: number
-  }
-}
-
-export const initialQuoteDataMock: QuoteData = {
-  insuranceType: null,
-  clientType: 'person',
-  multiplier: 1,
-  policyData: null,
-  selectedPlan: null,
-  basePrices: {
-    Premium: 1500,
-    Elite: 1000,
-    Basic: 500,
-  },
+  basePrices: Record<string, number>
 }
 
 export interface PlanOption {
@@ -53,43 +40,10 @@ export interface PlanOption {
   recommended?: boolean
 }
 
-const plansMock: PlanOption[] = [
-  {
-    name: 'Basic',
-    features: ['Cobertura básica', 'Asistencia 24/7', 'Deducible estándar', 'Renovación anual'],
-  },
-  {
-    name: 'Elite',
-    features: [
-      'Cobertura ampliada',
-      'Asistencia prioritaria',
-      'Deducible reducido',
-      'Beneficios adicionales',
-      'Renovación automática',
-    ],
-    recommended: true,
-  },
-  {
-    name: 'Premium',
-    features: [
-      'Cobertura total',
-      'Asistencia VIP',
-      'Sin deducible',
-      'Todos los beneficios',
-      'Renovación automática',
-      'Asesor personal',
-    ],
-  },
-]
-
 export async function getQuoteData(): Promise<QuoteData> {
-  //TODO: integrar con backend -> traer solamente los precios base y asignarselos a basePrices
-  //Ej: basePrices: await fetch('/api/base-prices').then(res => res.json())
-  const basePrices = {
-    Premium: 1500,
-    Elite: 1000,
-    Basic: 500,
-  }
+  const res = await fetch('/api/plans/base-prices')
+  if (!res.ok) throw new Error('Failed to fetch active plans')
+  const basePrices = await res.json()
 
   const data: QuoteData = {
     insuranceType: null,
@@ -103,12 +57,23 @@ export async function getQuoteData(): Promise<QuoteData> {
 }
 
 export async function getMultiplierForInsuranceType(type: InsuranceType): Promise<number> {
-  //TODO: integrar con backend. En base a un tipo de seguro, traer el multiplicador correspondiente
-  //Ej: return await fetch(`/api/multiplier?type=${type}`).then(res => res.json())
-  return type === 'life' ? 1.2 : type === 'home' ? 1.3 : type === 'vehicle' ? 1.5 : 1
+  const res = await fetch('/api/plans/multiplier?type=${type}')
+  if (!res.ok) throw new Error('Failed to fetch plan multiplier')
+  const multiplier = await res.json()
+
+  return multiplier
 }
 
 export async function getAvailablePlans(): Promise<PlanOption[]> {
-  //TODO: integrar con backend
-  return plansMock
+  const res = await fetch('/api/plans/active')
+  if (!res.ok) throw new Error('Failed to fetch active plans')
+  const plans: Tables<'plans'>[] = await res.json()
+
+  const planOptions: PlanOption[] = plans.map(plan => ({
+    name: plan.category as Enums<'policy_type_enum'>,
+    features: plan.benefits as string[],
+    recommended: plan.category === 'Elite',
+  }))
+
+  return planOptions
 }
