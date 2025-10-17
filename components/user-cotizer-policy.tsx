@@ -46,6 +46,7 @@ export default function UserCotizerPolicy({ onBack }: UserCotizerPolicyProps) {
   }
 
   const handleInsuranceTypeSelect = async (type: InsuranceType) => {
+    console.log(type)
     const multiplier = await getMultiplierForInsuranceType(type)
     setQuoteData((prev) => ({ ...prev!, insuranceType: type, multiplier }))
     setCurrentStep(2)
@@ -80,7 +81,19 @@ export default function UserCotizerPolicy({ onBack }: UserCotizerPolicyProps) {
     setCurrentStep(1)
   }
 
-  const handleRegister = () => {
+  const handleRegister = async () => {
+      const res = await fetch("/api/policy/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          insuranceType: quoteData.insuranceType,
+          clientType: quoteData.clientType,
+          multiplier: quoteData.multiplier,
+          policyData: quoteData.policyData,
+          selectedPlan: quoteData.selectedPlan,
+          basePrices: quoteData.basePrices
+        }),
+      });
     console.log('Registering policy with data:', quoteData)
   }
 
