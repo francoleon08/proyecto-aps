@@ -1,7 +1,7 @@
 'use server'
 
 import { createClient } from '@supabase/supabase-js'
-import { Database, Tables } from '@/types/database'
+import { Database } from '@/types/database'
 import { cookies } from 'next/headers'
 import { LifePolicyData, HomePolicyData, VehiclePolicyData, QuoteData, PolicyCategory } from '@/lib/policy-plan'
 
@@ -105,19 +105,19 @@ async function createHomePolicy(policyID: string, homePolicyData: HomePolicyData
 }
 
 async function createVehiclePolicy(policyID: string, vehiclePolicyData: VehiclePolicyData) {
-  let numberRisk;
+  let numberRisk
   switch (vehiclePolicyData.vehicleTheftRisk) {
     case 'low':
-      numberRisk = 1;
-      break;
+      numberRisk = 1
+      break
     case 'medium':
-      numberRisk = 2;
-      break;
+      numberRisk = 2
+      break
     case 'high':
-      numberRisk = 3;
-      break;
+      numberRisk = 3
+      break
     default:
-      numberRisk = 0;
+      numberRisk = 0
   }
 
   const insertData = {
