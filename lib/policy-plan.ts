@@ -21,8 +21,8 @@ export interface HomePolicyData {
 export interface VehiclePolicyData {
   vehicleYear: number
   vehicleModel: string
-  vehicleTheftRisk: string
-  driverViolations: number
+  vehicleTheftRisk: number
+  driverViolations: string
 }
 
 export interface QuoteData {
