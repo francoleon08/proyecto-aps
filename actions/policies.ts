@@ -9,6 +9,7 @@ import {
   HomePolicyData,
   VehiclePolicyData,
   QuoteData,
+  PolicyCategory,
 } from '@/lib/policy-plan'
 
 
@@ -21,13 +22,17 @@ export async function createContractedPolicy(quoteData: QuoteData): Promise<{ su
   
   const userID = await getUserIdFromCookie()
   if(!userID.success) return {success: false, error: userID.error}
+  console.log('USER ID: ', userID.id)
   
-  const planID = await getPlanId(quoteData.insuranceType)
+  const planID = await getPlanId(quoteData.selectedPlan as PolicyCategory)
   if(!planID.success) return {success: false, error: planID.error}
-  
+  console.log('PLAN ID: ', planID.id)
+
   const generalPolicyID = await createGeneralPolicy(userID.id as string, planID.id as string)
   if(!generalPolicyID.success) return {success: false, error: generalPolicyID.error}
-  
+  console.log('NEW POLICY ID: ', generalPolicyID.id)
+
+
   switch(quoteData.insuranceType){
     case "life": 
       await createLifePolicy(generalPolicyID.id as string, quoteData.policyData as LifePolicyData)
@@ -45,6 +50,7 @@ export async function createContractedPolicy(quoteData: QuoteData): Promise<{ su
 async function getUserIdFromCookie(): Promise<{success: boolean; error?: string; id?: string}> {
   const cookieStore = cookies();
   const sessionToken = cookieStore.get('auth-session')?.value;
+  console.log(sessionToken)
   if (!sessionToken) throw new Error("Invalid session token");
 
   const {data, error} = await supabase
@@ -58,12 +64,12 @@ async function getUserIdFromCookie(): Promise<{success: boolean; error?: string;
   return {success: true, id: data.user_id};
 }
 
-async function getPlanId(type: InsuranceType): Promise<{success: boolean; error?: string; id?: string}> {
+async function getPlanId(type: PolicyCategory): Promise<{success: boolean; error?: string; id?: string}> {
   if(type === null) throw new Error("null insurance type")
   const {data, error} = await supabase
     .from('plans')
     .select('id')
-    .eq('category', type.charAt(0).toUpperCase() + type.slice(1))
+    .eq('category', type) //.charAt(0).toUpperCase() + type.slice(1)
     .single()
 
   if (error) return {success: false, error: error.message}
