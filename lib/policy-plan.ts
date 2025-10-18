@@ -7,12 +7,12 @@ export type PolicyCategory = 'Premium' | 'Elite' | 'Basic'
 export type ClientType = 'person' | 'business'
 
 export interface LifePolicyData {
-  certPresented: string
+  certPresented: boolean
   certData: string
 }
 
 export interface HomePolicyData {
-  constructionType: 'Brick' | 'Concrete' | 'Wood' | 'Mixed'
+  constructionType: 'brick' | 'concrete' | 'wood' | 'mixed'
   buildingAge: number
   city: string
   neighborhood: string
@@ -21,8 +21,8 @@ export interface HomePolicyData {
 export interface VehiclePolicyData {
   vehicleYear: number
   vehicleModel: string
-  vehicleTheftRisk: string
-  driverViolations: number
+  vehicleTheftRisk: number
+  driverViolations: string
 }
 
 export interface QuoteData {
@@ -61,7 +61,7 @@ export async function getMultiplierForInsuranceType(type: InsuranceType): Promis
   if (!res.ok) throw new Error('Failed to fetch plan multiplier')
   const multiplier = await res.json()
 
-  return multiplier
+  return 1
 }
 
 export async function getAvailablePlans(): Promise<PlanOption[]> {

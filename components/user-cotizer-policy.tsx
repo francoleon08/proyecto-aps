@@ -17,6 +17,7 @@ import {
   getQuoteData,
   getMultiplierForInsuranceType,
 } from '@/lib/policy-plan'
+import toast from 'react-hot-toast'
 
 interface UserCotizerPolicyProps {
   onBack: () => void
@@ -46,6 +47,7 @@ export default function UserCotizerPolicy({ onBack }: UserCotizerPolicyProps) {
   }
 
   const handleInsuranceTypeSelect = async (type: InsuranceType) => {
+    console.log(type)
     const multiplier = await getMultiplierForInsuranceType(type)
     setQuoteData((prev) => ({ ...prev!, insuranceType: type, multiplier }))
     setCurrentStep(2)
@@ -80,8 +82,37 @@ export default function UserCotizerPolicy({ onBack }: UserCotizerPolicyProps) {
     setCurrentStep(1)
   }
 
-  const handleRegister = () => {
-    console.log('Registering policy with data:', quoteData)
+  const handleRegister = async () => {
+    toast.promise(
+      new Promise(async (resolve, reject) => {
+        const res = await fetch('/api/policy/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            insuranceType: quoteData.insuranceType,
+            clientType: quoteData.clientType,
+            multiplier: quoteData.multiplier,
+            policyData: quoteData.policyData,
+            selectedPlan: quoteData.selectedPlan,
+            basePrices: quoteData.basePrices,
+          }),
+        })
+        const data = await res.json()
+        if (res.ok) {
+          resolve('Póliza registrada exitosamente, será redirigido al inicio')
+          setTimeout(() => {
+            return window.location.href = '/dashboard/client'
+          }, 2000)
+        } else {
+          reject(data.error || 'Error al registrar la póliza')
+        }
+      }),
+      {
+        loading: 'Registrando póliza...',
+        success: 'Póliza registrada exitosamente, será redirigido al inicio',
+        error: (err) => `Error al registrar la póliza: ${err.message}`,
+      }
+    )
   }
 
   return (
