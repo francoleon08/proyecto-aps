@@ -16,3 +16,13 @@ export interface RecentSession {
   user_agent: string | null
   metadata: Record<string, any> | null
 }
+
+export type Request = {
+  id: number
+  client: string
+  event: string
+  date: string
+  state: 'pendiente' | 'aprobada' | 'rechazada'
+  description?: string
+  amount?: string
+}

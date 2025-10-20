@@ -11,7 +11,8 @@ interface ConfirmDialogProps {
   description?: string
   confirmText?: string
   cancelText?: string
-  onConfirm: () => Promise<void> | void
+  onConfirm?: () => Promise<void> | void
+  onCancel?: () => Promise<void> | void
 }
 
 export function ConfirmDialog({
@@ -21,6 +22,7 @@ export function ConfirmDialog({
   confirmText = 'Confirm',
   cancelText = 'Cancel',
   onConfirm,
+  onCancel,
 }: ConfirmDialogProps) {
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -28,12 +30,24 @@ export function ConfirmDialog({
   const handleConfirm = async () => {
     setLoading(true)
     try {
-      await onConfirm()
+      if (onConfirm) await onConfirm()
       setOpen(false)
     } catch (error) {
       toast.error('Something went wrong.')
     } finally {
       setLoading(false)
+    }
+  }
+
+  const handleCancel = async () => {
+    try {
+      if (onCancel) await onCancel()
+      setOpen(false)
+    } catch (error) {
+      toast.error('Something went wrong.')
+    } finally {
+      setLoading(false)
+      setOpen(false)
     }
   }
 
@@ -47,7 +61,7 @@ export function ConfirmDialog({
           </DialogHeader>
           <p className="mt-2">{description}</p>
           <DialogFooter className="flex gap-2 mt-4">
-            <Button variant="secondary" onClick={() => setOpen(false)}>
+            <Button variant="secondary" onClick={handleCancel}>
               {cancelText}
             </Button>
             <Button variant="destructive" onClick={handleConfirm} disabled={loading}>
