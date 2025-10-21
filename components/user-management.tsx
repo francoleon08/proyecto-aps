@@ -2,18 +2,18 @@
 
 import { useState, useEffect } from "react";
 // Remove direct import of server functions
-import { User, UserType, UserStatus } from "@/types/database";
+import { Tables } from "@/types/database";
 
 interface UserManagementProps {
   onBack: () => void;
 }
 
-export default function UserManagement({ onBack }: UserManagementProps) {
-  const [users, setUsers] = useState<User[]>([]);
+export function UserManagement({ onBack }: UserManagementProps) {
+  const [users, setUsers] = useState<Tables<'users'>[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
-  const [userTypeFilter, setUserTypeFilter] = useState<UserType | "">("");
-  const [statusFilter, setStatusFilter] = useState<UserStatus | "">("");
+  const [userTypeFilter, setUserTypeFilter] = useState<Tables<'users'>['user_type'] | "">("");
+  const [statusFilter, setStatusFilter] = useState<Tables<'users'>['status'] | "">("");
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
   const [error, setError] = useState("");
@@ -25,7 +25,7 @@ export default function UserManagement({ onBack }: UserManagementProps) {
     email: "",
     password: "",
     confirmPassword: "",
-    user_type: "client" as UserType,
+    user_type: "client" as Tables<'users'>['user_type'],
   });
 
   useEffect(() => {
@@ -60,7 +60,7 @@ export default function UserManagement({ onBack }: UserManagementProps) {
     }
   };
 
-  const handleStatusToggle = async (userId: string, currentStatus: UserStatus) => {
+  const handleStatusToggle = async (userId: string, currentStatus: Tables<'users'>['status']) => {
     try {
       const newStatus = currentStatus === "active" ? "inactive" : "active";
       const response = await fetch(`/api/admin/users/${userId}/status`, {
@@ -134,8 +134,8 @@ export default function UserManagement({ onBack }: UserManagementProps) {
     }
   };
 
-  const getUserTypeLabel = (userType: UserType) => {
-    const labels: Record<UserType, string> = {
+  const getUserTypeLabel = (userType: Tables<'users'>['user_type']) => {
+    const labels: Record<Tables<'users'>['user_type'], string> = {
       client: "Cliente",
       employee: "Empleado",
       admin: "Administrador",
@@ -143,18 +143,18 @@ export default function UserManagement({ onBack }: UserManagementProps) {
     return labels[userType];
   };
 
-  const getStatusLabel = (status: UserStatus) => {
+  const getStatusLabel = (status: Tables<'users'>['status']) => {
     return status === "active" ? "Activo" : "Inactivo";
   };
 
-  const getStatusColor = (status: UserStatus) => {
+  const getStatusColor = (status: Tables<'users'>['status']) => {
     return status === "active" 
       ? "bg-green-100 text-green-800" 
       : "bg-red-100 text-red-800";
   };
 
-  const getUserTypeColor = (userType: UserType) => {
-    const colors: Record<UserType, string> = {
+  const getUserTypeColor = (userType: Tables<'users'>['user_type']) => {
+    const colors: Record<Tables<'users'>['user_type'], string> = {
       client: "bg-green-100 text-green-800",
       employee: "bg-blue-100 text-blue-800",
       admin: "bg-red-100 text-red-800",
@@ -163,9 +163,9 @@ export default function UserManagement({ onBack }: UserManagementProps) {
   };
 
   return (
-    <div className="space-y-6">
+    <div>
       {/* Header */}
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center mb-5">
         <div>
           <h2 className="text-2xl font-bold text-gray-900">Gestión de Usuarios</h2>
           <p className="text-gray-600">Administrar usuarios del sistema</p>
@@ -191,7 +191,7 @@ export default function UserManagement({ onBack }: UserManagementProps) {
       )}
 
       {/* Filters and Actions */}
-      <div className="bg-white shadow rounded-lg p-6">
+      <div className="bg-white shadow rounded-lg p-6 my-5">
         <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
           <div className="flex flex-col sm:flex-row gap-4 flex-1">
             {/* Search */}
@@ -208,7 +208,7 @@ export default function UserManagement({ onBack }: UserManagementProps) {
             {/* User Type Filter */}
             <select
               value={userTypeFilter}
-              onChange={(e) => setUserTypeFilter(e.target.value as UserType | "")}
+              onChange={(e) => setUserTypeFilter(e.target.value as Tables<'users'>['user_type'] | "")}
               className="px-3 py-2 border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
             >
               <option value="">Todos los tipos</option>
@@ -220,7 +220,7 @@ export default function UserManagement({ onBack }: UserManagementProps) {
             {/* Status Filter */}
             <select
               value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value as UserStatus | "")}
+              onChange={(e) => setStatusFilter(e.target.value as Tables<'users'>['status'] | "")}
               className="px-3 py-2 border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
             >
               <option value="">Todos los estados</option>
@@ -271,10 +271,9 @@ export default function UserManagement({ onBack }: UserManagementProps) {
                 <label className="block text-sm font-medium text-gray-700">Tipo de usuario</label>
                 <select
                   value={createForm.user_type}
-                  onChange={(e) => setCreateForm({ ...createForm, user_type: e.target.value as UserType })}
+                  onChange={(e) => setCreateForm({ ...createForm, user_type: e.target.value as Tables<'users'>['user_type'] })}
                   className="mt-1 w-full px-3 py-2 border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                 >
-                  <option value="client">Cliente</option>
                   <option value="employee">Empleado</option>
                   <option value="admin">Administrador</option>
                 </select>
@@ -324,7 +323,7 @@ export default function UserManagement({ onBack }: UserManagementProps) {
       )}
 
       {/* Users Table */}
-      <div className="bg-white shadow rounded-lg overflow-hidden">
+      <div className="bg-white shadow rounded-lg overflow-hidden my-5">
         {isLoading ? (
           <div className="flex items-center justify-center h-64">
             <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-indigo-600"></div>
@@ -371,7 +370,7 @@ export default function UserManagement({ onBack }: UserManagementProps) {
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {new Date(user.created_at).toLocaleDateString()}
+                      {user.created_at && new Date(user.created_at).toLocaleDateString()}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <button

@@ -1,6 +1,7 @@
 import bcrypt from "bcryptjs";
 import { supabaseAdmin } from "./supabase/admin";
-import { UserType, UserStatus, User, DashboardMetrics, RecentSession, SessionAction } from "@/types/database";
+import { Tables } from "@/types/database";
+import { DashboardMetrics, RecentSession } from "@/types/custom";
 
 export interface LoginCredentials {
   email: string;
@@ -11,15 +12,15 @@ export interface RegisterData {
   name: string;
   email: string;
   password: string;
-  user_type?: UserType;
+  user_type?: Tables<'users'>['user_type'];
 }
 
 export interface AuthUser {
   id: string;
   name: string;
   email: string;
-  user_type: UserType;
-  status: UserStatus;
+  user_type: Tables<'users'>['user_type'];
+  status: Tables<'users'>['status'];
   created_at: string;
 }
 
@@ -236,7 +237,7 @@ export async function emailExists(email: string): Promise<boolean> {
 // Log session action
 export async function logSessionAction(
   userId: string | null,
-  action: SessionAction,
+  action: Tables<'sessions'>['action'],
   ipAddress?: string,
   userAgent?: string,
   metadata?: Record<string, any>
@@ -319,9 +320,9 @@ export async function getUsers(
   limit: number = 50,
   offset: number = 0,
   search?: string,
-  userType?: UserType,
-  status?: UserStatus
-): Promise<{ success: boolean; error?: string; users?: User[]; totalCount?: number }> {
+  userType?: Tables<'users'>['user_type'],
+  status?: Tables<'users'>['status']
+): Promise<{ success: boolean; error?: string; users?: Tables<'users'>[]; totalCount?: number }> {
   try {
     const { data: result, error } = await supabaseAdmin.rpc("get_users", {
       p_limit: limit,
@@ -354,7 +355,7 @@ export async function getUsers(
 // Update user status
 export async function updateUserStatus(
   userId: string,
-  status: UserStatus,
+  status: Tables<'users'>['status'],
   adminId?: string
 ): Promise<{ success: boolean; error?: string }> {
   try {
