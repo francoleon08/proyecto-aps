@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { revalidatePath } from 'next/cache'
 import { Inter } from 'next/font/google'
 import { Toaster } from '@/components/ui/toaster';
+import { ToastProvider, ToastViewport } from '@/components/ui/toast';
 import './globals.css'
 
 const inter = Inter({ subsets: ['latin'] })
@@ -16,8 +17,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="es">
       <body className={inter.className}>
-        <div className="min-h-screen bg-gray-50">{children}</div>
-        <Toaster />
+        <ToastProvider>
+          <div className="min-h-screen bg-gray-50">{children}</div>
+          <Toaster />
+          <ToastViewport />
+        </ToastProvider>
       </body>
     </html>
   )
