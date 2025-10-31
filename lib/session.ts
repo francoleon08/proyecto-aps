@@ -36,7 +36,7 @@ export const clientSession = {
       const response = await fetch('/api/auth/me')
       if (response.ok) {
         const data = await response.json()
-        return data.user
+        return data;
       }
       return null
     } catch (error) {
