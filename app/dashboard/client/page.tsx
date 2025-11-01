@@ -1,10 +1,12 @@
-"use client"
+'use client'
 
 import { useState } from 'react'
 import { DashboardLayout } from '@/components/dashboard-layout'
 import UserCotizerPolicy from '@/components/user-cotizer-policy'
+import { useRouter } from 'next/navigation'
 
 export default function ClientDashboard() {
+  const router = useRouter()
   const [showCotizerPolicy, setShowCotizerPolicy] = useState(false)
 
   if (showCotizerPolicy) {
@@ -29,6 +31,12 @@ export default function ClientDashboard() {
               className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
             >
               Cotizar Poliza
+            </button>
+            <button
+              onClick={() => router.push('/payments')}
+              className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
+            >
+              Pagar Pólizas Pendientes
             </button>
             <button className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors">
               Ver Polizas Activas
