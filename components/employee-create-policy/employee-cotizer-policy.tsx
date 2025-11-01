@@ -32,7 +32,7 @@ export default function EmployeeCotizerPolicy({ onBack }: EmployeeCotizerPolicyP
   const [currentStep, setCurrentStep] = useState(1)
   const [quoteData, setQuoteData] = useState<QuoteData>()
   const [loading, setLoading] = useState(true)
-  const [clientId, setClientId] = useState<Client | null>(null)
+  const [client, setClient] = useState<Client | null>(null)
 
   const fetchInitialData = async () => {
     const initialData = await getQuoteData()
@@ -133,7 +133,7 @@ export default function EmployeeCotizerPolicy({ onBack }: EmployeeCotizerPolicyP
       </div>
       <div className="max-w-5xl mx-auto">
         <div className="mt-8">
-          {currentStep === 1 && <SelectClientStep onSelect={(client) => { setClientId(client); setCurrentStep(2); }} />}
+          {currentStep === 1 && <SelectClientStep onSelect={(client) => { setClient(client); setCurrentStep(2); }} />}
 
           {currentStep === 2 && <InsuranceTypeStep onSelect={handleInsuranceTypeSelect} onBack={handleBack} />}
 
@@ -155,6 +155,7 @@ export default function EmployeeCotizerPolicy({ onBack }: EmployeeCotizerPolicyP
               onBack={handleBack}
               onReset={handleReset}
               onConfirm={handleRegister}
+              client={client}
             />
           )}
         </div>

@@ -3,17 +3,23 @@
 import { useEffect, useState } from 'react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { ArrowLeft, CheckCircle2 } from 'lucide-react'
+import { ArrowLeft, CheckCircle2, User } from 'lucide-react'
 import type { QuoteData } from '@/lib/policy-plan'
+
+interface Client {
+  id: string
+  name: string
+}
 
 interface QuoteSummaryStepProps {
   quoteData: QuoteData
   onBack: () => void
   onReset: () => void
   onConfirm?: () => void
+  client?: Client | null
 }
 
-export function QuoteSummaryStep({ quoteData, onBack, onReset, onConfirm }: QuoteSummaryStepProps) {
+export function QuoteSummaryStep({ quoteData, onBack, onReset, onConfirm, client }: QuoteSummaryStepProps) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -68,6 +74,11 @@ export function QuoteSummaryStep({ quoteData, onBack, onReset, onConfirm }: Quot
         <div className="flex items-center gap-3 p-4 bg-gray-100 rounded-lg border border-primary/20">
           <CheckCircle2 className="h-6 w-6 text-green-500 flex-shrink-0" />
           <p className="text-foreground font-medium">¡Tu cotización está lista!</p>
+        </div>
+         {/* Client Information */}
+        <div className="flex items-center gap-3 p-4 rounded-lg border border-primary/20">
+          <User className="h-6 w-6 text-primary flex-shrink-0" />
+          <p className="text-foreground font-medium">Cliente: {client?.name}</p>
         </div>
 
         {/* Quote Details */}
