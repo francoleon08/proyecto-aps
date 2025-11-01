@@ -13,7 +13,11 @@ const supabase = createClient<Database>(
 export async function createContractedPolicy(
   quoteData: QuoteData
 ): Promise<{ success: boolean; error?: string; id?: string }> {
-  const userID = await getUserIdFromCookie()
+  let userID: { success: boolean; error?: string; id?: string } = { success: true, id: quoteData.clientID }
+  if (!quoteData.clientID) {
+    userID = await getUserIdFromCookie()
+  }
+  
   if (!userID.success)
     return {
       success: false,
