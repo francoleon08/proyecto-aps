@@ -14,9 +14,9 @@ export async function createContractedPolicy(
   quoteData: QuoteData
 ): Promise<{ success: boolean; error?: string; id?: string }> {
   let userID: { success: boolean; error?: string; id?: string } = { success: true, id: quoteData.clientID }
-  if (!quoteData.clientID) {
+  if (quoteData.clientID === undefined) {
     userID = await getUserIdFromCookie()
-  }
+  }  
   
   if (!userID.success)
     return {

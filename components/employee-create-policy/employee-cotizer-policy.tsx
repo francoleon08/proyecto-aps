@@ -101,7 +101,7 @@ export default function EmployeeCotizerPolicy({ onBack }: EmployeeCotizerPolicyP
             policyData: quoteData.policyData,
             selectedPlan: quoteData.selectedPlan,
             basePrices: quoteData.basePrices,
-            clientId: client?.id,
+            clientID: client?.id,
           }),
         })
         const data = await res.json()
