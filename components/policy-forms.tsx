@@ -33,6 +33,14 @@ export function LifePolicyForm({ policy, onSave, onCancel }: LifePolicyFormProps
     }
   }
 
+  const parseCertData = (certData: string) => {
+    try {
+      return JSON.parse(certData)
+    } catch {
+      return certData
+    }
+  }
+
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
@@ -57,7 +65,7 @@ export function LifePolicyForm({ policy, onSave, onCancel }: LifePolicyFormProps
         <Label htmlFor="cert_data">Datos del Certificado</Label>
         <Input
           id="cert_data"
-          value={formData.cert_data}
+          value={parseCertData(formData.cert_data).certData}
           onChange={(e) => setFormData({ ...formData, cert_data: e.target.value })}
           placeholder="Ingrese los datos del certificado"
         />
