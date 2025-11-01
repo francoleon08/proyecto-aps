@@ -13,7 +13,7 @@ interface Client {
 }
 
 interface SelectClientStepProps {
-  onSelect: (clientId: string) => void
+  onSelect: (client: Client) => void
 }
 
 export function SelectClientStep({ onSelect }: SelectClientStepProps) {
@@ -81,7 +81,7 @@ export function SelectClientStep({ onSelect }: SelectClientStepProps) {
             <div
               key={client.id}
               className="p-4 border rounded-lg hover:bg-accent hover:border-primary cursor-pointer transition-all duration-200 flex items-center gap-3"
-              onClick={() => onSelect(client.id)}
+              onClick={() => onSelect(client)}
             >
               <div className="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center">
                 <User className="w-3 h-3 text-primary" />
