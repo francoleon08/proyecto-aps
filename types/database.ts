@@ -62,7 +62,7 @@ export type Database = {
           building_age: number
           city: string
           construction_type: Database["public"]["Enums"]["construction_type_enum"]
-          id: string
+          id?: string
           neighborhood: string
         }
         Update: {
@@ -111,31 +111,34 @@ export type Database = {
       payment: {
         Row: {
           amount_paid: number
-          coupon_id: string
+          coupon_id: string | null
           id: string
           method: Database["public"]["Enums"]["payment_method_enum"]
           payment_day: string
+          policy_id: string
         }
         Insert: {
           amount_paid: number
-          coupon_id: string
+          coupon_id?: string | null
           id?: string
           method: Database["public"]["Enums"]["payment_method_enum"]
           payment_day: string
+          policy_id: string
         }
         Update: {
           amount_paid?: number
-          coupon_id?: string
+          coupon_id?: string | null
           id?: string
           method?: Database["public"]["Enums"]["payment_method_enum"]
           payment_day?: string
+          policy_id?: string
         }
         Relationships: [
           {
-            foreignKeyName: "payment_coupon_id_fkey"
-            columns: ["coupon_id"]
+            foreignKeyName: "payment_policy_id_fkey"
+            columns: ["policy_id"]
             isOneToOne: false
-            referencedRelation: "payment_coupon"
+            referencedRelation: "contracted_policy"
             referencedColumns: ["id"]
           },
         ]
@@ -143,32 +146,35 @@ export type Database = {
       payment_coupon: {
         Row: {
           amount: number
-          coupon_number: number
+          code: string
           due_date: string
           id: string
           issue_date: string
           period: Database["public"]["Enums"]["payment_period_enum"]
-          policy_id: string
+          policy_count: number
+          policy_id: string | null
           status: Database["public"]["Enums"]["coupon_status_enum"]
         }
         Insert: {
           amount: number
-          coupon_number: number
+          code: string
           due_date: string
           id?: string
           issue_date?: string
           period: Database["public"]["Enums"]["payment_period_enum"]
-          policy_id: string
+          policy_count: number
+          policy_id?: string | null
           status: Database["public"]["Enums"]["coupon_status_enum"]
         }
         Update: {
           amount?: number
-          coupon_number?: number
+          code?: string
           due_date?: string
           id?: string
           issue_date?: string
           period?: Database["public"]["Enums"]["payment_period_enum"]
-          policy_id?: string
+          policy_count?: number
+          policy_id?: string | null
           status?: Database["public"]["Enums"]["coupon_status_enum"]
         }
         Relationships: [
@@ -259,7 +265,7 @@ export type Database = {
         Row: {
           action: Database["public"]["Enums"]["session_action_enum"]
           id: string
-          ip_address: unknown | null
+          ip_address: unknown
           metadata: Json | null
           timestamp: string | null
           user_agent: string | null
@@ -268,7 +274,7 @@ export type Database = {
         Insert: {
           action: Database["public"]["Enums"]["session_action_enum"]
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           metadata?: Json | null
           timestamp?: string | null
           user_agent?: string | null
@@ -277,7 +283,7 @@ export type Database = {
         Update: {
           action?: Database["public"]["Enums"]["session_action_enum"]
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           metadata?: Json | null
           timestamp?: string | null
           user_agent?: string | null
@@ -295,31 +301,37 @@ export type Database = {
       }
       users: {
         Row: {
+          address: string | null
           created_at: string | null
           email: string
           id: string
           name: string
           password: string
+          phone: string | null
           status: Database["public"]["Enums"]["user_status_enum"]
           updated_at: string | null
           user_type: Database["public"]["Enums"]["user_type_enum"]
         }
         Insert: {
+          address?: string | null
           created_at?: string | null
           email: string
           id?: string
           name: string
           password: string
+          phone?: string | null
           status?: Database["public"]["Enums"]["user_status_enum"]
           updated_at?: string | null
           user_type?: Database["public"]["Enums"]["user_type_enum"]
         }
         Update: {
+          address?: string | null
           created_at?: string | null
           email?: string
           id?: string
           name?: string
           password?: string
+          phone?: string | null
           status?: Database["public"]["Enums"]["user_status_enum"]
           updated_at?: string | null
           user_type?: Database["public"]["Enums"]["user_type_enum"]
@@ -336,7 +348,7 @@ export type Database = {
         }
         Insert: {
           driver_violations?: Json | null
-          id: string
+          id?: string
           vehicle_model: string
           vehicle_theft_risk: number
           vehicle_year: number
@@ -363,18 +375,9 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      get_dashboard_metrics: {
-        Args: Record<PropertyKey, never>
-        Returns: Json
-      }
-      get_recent_sessions: {
-        Args: { p_limit?: number }
-        Returns: Json
-      }
-      get_user_by_id: {
-        Args: { p_user_id: string }
-        Returns: Json
-      }
+      get_dashboard_metrics: { Args: never; Returns: Json }
+      get_recent_sessions: { Args: { p_limit?: number }; Returns: Json }
+      get_user_by_id: { Args: { p_user_id: string }; Returns: Json }
       get_users: {
         Args: {
           p_limit?: number
