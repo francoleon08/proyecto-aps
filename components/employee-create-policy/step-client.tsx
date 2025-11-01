@@ -47,7 +47,7 @@ export function SelectClientStep({ onSelect }: SelectClientStepProps) {
 
       <Input
         type="text"
-        placeholder="Buscar cliente por nombre o email..."
+        placeholder="Buscar cliente por nombre"
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
         className="mb-6"
