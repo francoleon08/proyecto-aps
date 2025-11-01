@@ -5,7 +5,7 @@ export async function GET(request: Request) {
   try {
     const supabase = createClient()
 
-    const { data, error } = await supabase.from('users').select('*').eq('user_type', 'client')
+    const { data, error } = await supabase.from('users').select('id, name').eq('user_type', 'client')
 
     if (error) {
       console.error('Error fetching clients:', error)
