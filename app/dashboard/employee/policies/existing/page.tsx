@@ -115,9 +115,19 @@ export default function ExistingPoliciesPage() {
       <div className="text-sm text-gray-600">
         Certificado: {policy.cert_presented ? '✓ Presentado' : '✗ No presentado'}
       </div>
-      {policy.cert_data && <div className="text-sm text-gray-500">Datos: {policy.cert_data}</div>}
+      {policy.cert_data && (
+        <div className="text-sm text-gray-500">Datos: {parseCertData(policy.cert_data).certData}</div>
+      )}
     </div>
   )
+
+  const parseCertData = (certData: string) => {
+    try {
+      return JSON.parse(certData)
+    } catch {
+      return certData
+    }
+  }
 
   const renderHomePolicy = (policy: HomePolicy) => (
     <div className="space-y-1">
@@ -126,13 +136,26 @@ export default function ExistingPoliciesPage() {
         <span className="font-medium">Cliente: {policy.user_name}</span>
       </div>
       <div className="text-sm text-gray-600">
-        {policy.construction_type} • {policy.building_age} años
+        {getConstructionType(policy.construction_type)} • {policy.building_age} años
       </div>
       <div className="text-sm text-gray-500">
         {policy.city}, {policy.neighborhood}
       </div>
     </div>
   )
+
+  const getConstructionType = (constructionType: string) => {
+    switch (constructionType) {
+      case 'wood':
+        return 'Madera'
+      case 'brick':
+        return 'Ladrillo'
+      case 'concrete':
+        return 'Concreto'
+      default:
+        return 'N/A'
+    }
+  }
 
   const renderVehiclePolicy = (policy: VehiclePolicy) => (
     <div className="space-y-1">

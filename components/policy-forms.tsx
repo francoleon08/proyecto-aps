@@ -110,12 +110,17 @@ export function HomePolicyForm({ policy, onSave, onCancel }: HomePolicyFormProps
 
       <div>
         <Label htmlFor="construction_type">Tipo de Construcción</Label>
-        <Input
+        <select
           id="construction_type"
           value={formData.construction_type}
           onChange={(e) => setFormData({ ...formData, construction_type: e.target.value })}
-          placeholder="Ej: Ladrillo, Madera, etc."
-        />
+          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
+          <option value="">Seleccione</option>
+          <option value="brick">Ladrillo</option>
+          <option value="wood">Madera</option>
+          <option value="concrete">Concreto</option>
+        </select>
       </div>
 
       <div>
