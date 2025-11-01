@@ -75,7 +75,7 @@ export async function isContactedPolicyPaid(id: string): Promise<boolean> {
   return data !== null
 }
 
-export async function processPayment(payment: TablesInsert<'payment'>): Promise<void> {
+export async function registerPayment(payment: TablesInsert<'payment'>): Promise<void> {
   const { error } = await supabase.from('payment').insert(payment)
   if (error) throw new Error(error.message)
   revalidatePath('/payments', 'layout')

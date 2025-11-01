@@ -8,15 +8,18 @@ import { SubscriptionSelector } from '@/components/client-payments/subscription-
 import { PaymentDataRead } from '@/components/client-payments/payment-data-read'
 import { toast } from 'react-hot-toast'
 import { Subscription } from '@/types/custom'
-import { getUserSubscriptions, processPayment } from '@/actions/payments'
+import { getUserSubscriptions } from '@/actions/payments'
 import { clientSession } from '@/lib/session'
 import { AuthUser } from '@/lib/auth'
 import { TablesInsert } from '@/types/database'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { DashboardLayout } from '@/components/dashboard-layout'
+import { processPreference } from '@/lib/payments'
+import { useRouter } from 'next/navigation'
 
 export default function PagosPage() {
+  const router = useRouter()
   const [loading, setLoading] = useState(true)
   const [processing, setProcessing] = useState(false)
   const [subscriptions, setSubscriptions] = useState<Subscription[]>([])
@@ -39,9 +42,20 @@ export default function PagosPage() {
     }
   }, [user])
 
+  useEffect((): void => {
+    subscriptions.forEach((subscription: Subscription): void => {
+      subscription.coupon = coupon?.id
+    })
+  }, [coupon])
+
+  const getSubscriptionsCount = (): number => {
+    return subscriptions.filter((subscription: Subscription): boolean => subscription.selected).length
+  }
+
   const handleSubscriptionToggle = (id: string) => {
-    if (subscriptions)
+    if (subscriptions) {
       setSubscriptions(subscriptions.map((sub) => (sub.id === id ? { ...sub, selected: !sub.selected } : sub)))
+    }
   }
 
   const handleCouponGenerate = (coupon: any) => {
@@ -52,22 +66,21 @@ export default function PagosPage() {
   const handlePaymentMethodSelect = (method: string) => {
     setSelectedPaymentMethod(method)
   }
-
-  const handleContinuePayment = () => {
-    if (processing) return
+  const handleContinuePayment = async () => {
+    if (processing || !coupon) return
+    const filtered_subscriptions: Subscription[] = subscriptions.filter(
+      (subscription: Subscription) => subscription.selected
+    )
     setProcessing(true)
-    subscriptions
-      .filter((subscription: Subscription) => subscription.selected)
-      .map((subscription: Subscription) => {
-        processPayment({
-          amount_paid: subscription.amount,
-          coupon_id: undefined, // TODO: fix this
-          method: 'external_platform',
-          payment_day: new Date().toISOString(),
-          policy_id: subscription.id,
-        }).then((r) => {
-          window.location.reload()
-        })
+    processPreference(coupon, filtered_subscriptions)
+      .then((init_point: string): void => {
+        toast.success('Estás siendo redirigido al servicio de pago externo')
+        setTimeout((): void => {
+          router.push(init_point)
+        }, 1000)
+      })
+      .finally(() => {
+        setProcessing(false)
       })
   }
 
@@ -75,7 +88,7 @@ export default function PagosPage() {
   else
     return (
       <DashboardLayout title={'Gestión de Pagos'} description={'Paga tus pólizas desde tu casa'}>
-        <div className="p-8">
+        <div>
           <Link href="/dashboard/admin">
             <Button variant="ghost" className="mb-4 text-muted-foreground hover:text-foreground">
               <ArrowLeft className="h-4 w-4 mr-2" />
@@ -154,7 +167,7 @@ export default function PagosPage() {
 
                   <div>
                     <p className="text-sm text-slate-600">Suscripciones</p>
-                    <p className="text-sm font-medium text-slate-900">{coupon.policy_count} plan(es)</p>
+                    <p className="text-sm font-medium text-slate-900">{getSubscriptionsCount()} plan(es)</p>
                   </div>
 
                   <div>

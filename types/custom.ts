@@ -34,6 +34,7 @@ export interface Subscription {
   amount: number
   selected: boolean
   paid: boolean
+  coupon?: string
 }
 
 export interface PaymentMethod {

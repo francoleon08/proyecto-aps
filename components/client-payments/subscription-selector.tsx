@@ -60,6 +60,7 @@ export function SubscriptionSelector({ subscriptions, onToggle }: SubscriptionSe
                   {subscription.paid && <CheckCircle2 className="w-5 h-5 text-green-600" />}
                 </h3>
                 <p className="text-sm text-slate-600">{subscription.type}</p>
+                <p className="text-sm text-slate-600">Mensual</p>
               </div>
 
               {/* Amount */}
