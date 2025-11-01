@@ -26,3 +26,20 @@ export type Request = {
   description?: string
   amount?: string
 }
+
+export interface Subscription {
+  id: string
+  name: string
+  type: string
+  amount: number
+  selected: boolean
+  paid: boolean
+}
+
+export interface PaymentMethod {
+  id: string
+  name: string
+  description: string
+  icon: string
+  is_available: boolean
+}
