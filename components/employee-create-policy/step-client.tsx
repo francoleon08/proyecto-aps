@@ -2,7 +2,6 @@
 
 import { Card } from '@/components/ui/card'
 import { useEffect, useState } from 'react'
-import { supabaseBrowser } from '@/lib/supabase/browser'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Input } from '@/components/ui/input'
@@ -26,19 +25,9 @@ export function SelectClientStep({ onSelect }: SelectClientStepProps) {
   useEffect(() => {
     async function fetchClients() {
       try {
-        const data = [
-          { id: '1', name: 'Juan Pérez' },
-          { id: '2', name: 'María Gómez' },
-          { id: '3', name: 'Carlos Rodríguez' },
-          { id: '4', name: 'Ana Fernández' },
-          { id: '5', name: 'Luis Martínez' },
-          { id: '6', name: 'Sofía López' },
-          { id: '7', name: 'Miguel Torres' },
-          { id: '8', name: 'Lucía Ramírez' },
-          { id: '9', name: 'Diego Sánchez' },
-          { id: '10', name: 'Elena Cruz' },
-        ]
-        setClients(data || [])
+        const data = await fetch('/api/client')
+        const json = await data.json()
+        setClients(json.data || [])
       } catch (err) {
         setError('Error al cargar los clientes')
       } finally {
