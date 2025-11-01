@@ -1,22 +1,37 @@
-"use client"
+'use client'
 
-import { Card } from "@/components/ui/card"
-import { Heart, Home, Car } from "lucide-react"
+import { Card } from '@/components/ui/card'
+import { Heart, Home, Car } from 'lucide-react'
 import type { InsuranceType } from '@/lib/policy-plan'
+import { Button } from '@/components/ui/button'
+import { ArrowLeft } from 'lucide-react'
 
 interface InsuranceTypeStepProps {
   onSelect: (type: InsuranceType) => void
+  onBack?: () => void
 }
 
-export function InsuranceTypeStep({ onSelect }: InsuranceTypeStepProps) {
+export function InsuranceTypeStep({ onSelect, onBack }: InsuranceTypeStepProps) {
   return (
     <Card className="p-8">
-      <h2 className="text-2xl font-bold text-foreground mb-2">¿Qué deseas asegurar?</h2>
+      {onBack && (
+        <div className="flex items-center gap-4 mb-6">
+          <Button variant="ghost" size="icon" onClick={onBack} className="text-foreground">
+            <ArrowLeft className="h-5 w-5" />
+          </Button>
+          <h2 className="text-2xl font-bold text-foreground mb-2">¿Qué deseas asegurar?</h2>
+        </div>
+      )}
+      {!onBack && (
+        <>
+          <h2 className="text-2xl font-bold text-foreground mb-2">¿Qué deseas asegurar?</h2>
+        </>
+      )}
       <p className="text-muted-foreground mb-8">Selecciona el tipo de seguro que necesitas</p>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <button
-          onClick={() => onSelect("life")}
+          onClick={() => onSelect('life')}
           className="group relative overflow-hidden rounded-lg border-2 border-border bg-card p-8 transition-all hover:border-primary hover:shadow-lg"
         >
           <div className="flex flex-col items-center gap-4">
@@ -29,7 +44,7 @@ export function InsuranceTypeStep({ onSelect }: InsuranceTypeStepProps) {
         </button>
 
         <button
-          onClick={() => onSelect("home")}
+          onClick={() => onSelect('home')}
           className="group relative overflow-hidden rounded-lg border-2 border-border bg-card p-8 transition-all hover:border-primary hover:shadow-lg"
         >
           <div className="flex flex-col items-center gap-4">
@@ -42,7 +57,7 @@ export function InsuranceTypeStep({ onSelect }: InsuranceTypeStepProps) {
         </button>
 
         <button
-          onClick={() => onSelect("vehicle")}
+          onClick={() => onSelect('vehicle')}
           className="group relative overflow-hidden rounded-lg border-2 border-border bg-card p-8 transition-all hover:border-primary hover:shadow-lg"
         >
           <div className="flex flex-col items-center gap-4">
