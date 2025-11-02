@@ -14,7 +14,6 @@ export async function processPreference(
   subscriptions: Subscription[]
 ): Promise<string> {
   const params: string = `coupon_id=${coupon.code}&amount=${coupon.amount}&date=${new Date().toISOString()}`
-  console.log(params)
   return new Promise<string>((resolve: (value: string) => void, reject: (error: Error) => void): void => {
     preference
       .create({
@@ -51,7 +50,8 @@ export async function processPreference(
 
 export async function processPayment(id: string): Promise<void> {
   const payment: PaymentResponse = await new Payment(client).get({ id })
-  const subscriptions: Subscription[] = payment.metadata?.subscription as Subscription[]
+  const subscriptions: Subscription[] = payment.metadata?.subscriptions as Subscription[]
+  console.log(subscriptions)
 
   if (payment.status === 'approved') {
     if (subscriptions) {
