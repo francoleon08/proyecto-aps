@@ -74,5 +74,5 @@ export async function PUT(request: Request) {
   };
   createSession(authUser);
 
-  return NextResponse.json({ message: '¡Información actualizada con éxito!' });
+  return NextResponse.json({ message: '¡Información actualizada con éxito!', user: updatedUser });
 }

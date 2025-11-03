@@ -33,16 +33,19 @@ export default function ProfilePage() {
         });
       }
     };
-
     loadUserData();
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-
     try {
       const data = await updateUserProfile({ name, phone, address });
+      if(data.user) {
+        setName(data.user.name);
+        setPhone(data.user.phone);
+        setAddress(data.user.address);
+      }
       toast({
         title: 'Perfil Actualizado Correctamente',
         description: data.message,
