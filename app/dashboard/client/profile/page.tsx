@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -120,7 +121,10 @@ export default function ProfilePage() {
           )}
         </CardContent>
         {!isEditing && (
-          <CardFooter className="border-t px-6 py-4 flex justify-end">
+          <CardFooter className="border-t px-6 py-4 flex justify-end gap-2">
+            <Link href="/dashboard/client">
+              <Button variant="outline">Volver al Dashboard</Button>
+            </Link>
             <Button onClick={() => setIsEditing(true)} className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">Editar Perfil</Button>
           </CardFooter>
         )}
