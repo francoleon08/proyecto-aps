@@ -1,0 +1,20 @@
+name: Restrict PRs to master
+
+on:
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  check-branch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify source branch
+        run: |
+          echo "🔍 PR abierto desde: ${{ github.head_ref }}"
+          if [[ "${{ github.head_ref }}" != "develop" ]]; then
+            echo "❌ Solo se permiten PRs desde develop hacia master."
+            exit 1
+          else
+            echo "✅ PR válido desde develop."
+          fi
