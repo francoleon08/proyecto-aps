@@ -80,7 +80,7 @@ export default function RequestsPage() {
   )
 }
 
-export function getStateBadge(estado: Request['state']) {
+function getStateBadge(estado: Request['state']) {
   const variants = {
     pendiente: 'bg-[yellow] text-[black]',
     aprobada: 'bg-[green] text-[white]',
