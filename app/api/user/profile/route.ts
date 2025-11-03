@@ -20,18 +20,29 @@ export async function PUT(request: Request) {
 
   const body: Tables<'users'> = await request.json();
 
-  if (!body.name) {
-    return NextResponse.json({ error: 'Name is required' }, { status: 400 });
+  const supabase = createClient();
+
+  // Fetch the existing user data
+  const { data: existingUser, error: fetchError } = await supabase
+    .from('users')
+    .select('name, phone, address')
+    .eq('id', session.user.id)
+    .single();
+
+  if (fetchError || !existingUser) {
+    console.error('Error fetching existing user:', fetchError);
+    return NextResponse.json({ error: 'Error al obtener los datos del usuario' }, { status: 500 });
   }
 
-  const supabase = createClient();
+  const updatedData = {
+    name: body.name || existingUser.name,
+    phone: body.phone || existingUser.phone,
+    address: body.address || existingUser.address,
+  };
+
   const { data, error } = await supabase
     .from('users')
-    .update({
-      name: body.name,
-      phone: body.phone,
-      address: body.address,
-    })
+    .update(updatedData)
     .eq('id', session.user.id);
 
 
@@ -40,14 +51,13 @@ export async function PUT(request: Request) {
   }
 
   // Fetch the updated user data
-  const { data: updatedUser, error: fetchError } = await supabase
+  const { data: updatedUser, error: fetchUpdatedError } = await supabase
     .from('users')
     .select('id, name, email, phone, address, user_type, status, created_at')
     .eq('id', session.user.id)
     .single();
-
-  if (fetchError || !updatedUser) {
-    console.error('Error fetching updated user:', fetchError);
+  if (fetchUpdatedError || !updatedUser) {
+    console.error('Error fetching updated user:', fetchUpdatedError);
     return NextResponse.json({ error: 'Error al obtener el usuario actualizado' }, { status: 500 });
   }
 

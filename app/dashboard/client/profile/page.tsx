@@ -35,7 +35,7 @@ export default function ProfilePage() {
     };
 
     loadUserData();
-  }, [toast]);
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
