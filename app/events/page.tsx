@@ -2,7 +2,8 @@
 
 import type React from "react"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo } from "react"
+import Link from "next/link"
 import { DashboardLayout } from "@/components/dashboard-layout"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
@@ -33,19 +34,44 @@ interface PolicyEvent {
   policy?: Policy
 }
 
-const EVENT_TYPES = [
-  { value: "siniestro", label: "Siniestro" },
-  { value: "robo", label: "Robo" },
-  { value: "incendio", label: "Incendio" },
-  { value: "dano", label: "Daño" },
-  { value: "otro", label: "Otro" },
-]
+// Mapeo de tipos de eventos por tipo de póliza
+const EVENT_TYPES_BY_POLICY = {
+  Vida: [
+    { value: "robbery", label: "Robo" },
+    { value: "assault", label: "Asalto" },
+    { value: "battery", label: "Agresión" },
+  ],
+  Vehículo: [
+    { value: "damage", label: "Daño" },
+    { value: "crash", label: "Choque" },
+    { value: "grand_theft_auto", label: "Robo de Vehículo" },
+  ],
+  Hogar: [
+    { value: "fire", label: "Incendio" },
+    { value: "flood", label: "Inundación" },
+    { value: "burglary", label: "Robo en Domicilio" },
+  ],
+}
+
+// Mapeo de todos los tipos de eventos para mostrar en la tabla
+const ALL_EVENT_TYPES: Record<string, string> = {
+  robbery: "Robo",
+  assault: "Asalto",
+  battery: "Agresión",
+  damage: "Daño",
+  crash: "Choque",
+  grand_theft_auto: "Robo de Vehículo",
+  fire: "Incendio",
+  flood: "Inundación",
+  burglary: "Robo en Domicilio",
+}
 
 const STATUS_CONFIG = {
-  pendiente: { label: "Pendiente", className: "bg-gray-100 text-gray-800 hover:bg-gray-100" },
-  en_proceso: { label: "En Proceso", className: "bg-yellow-100 text-yellow-800 hover:bg-yellow-100" },
-  resuelto: { label: "Resuelto", className: "bg-green-100 text-green-800 hover:bg-green-100" },
-  rechazado: { label: "Rechazado", className: "bg-red-100 text-red-800 hover:bg-red-100" },
+  pending: { label: "Pendiente", className: "bg-gray-100 text-gray-800 hover:bg-gray-100" },
+  in_progress: { label: "En Proceso", className: "bg-yellow-100 text-yellow-800 hover:bg-yellow-100" },
+  completed: { label: "Completado", className: "bg-green-100 text-green-800 hover:bg-green-100" },
+  failed: { label: "Fallido", className: "bg-red-100 text-red-800 hover:bg-red-100" },
+  cancelled: { label: "Cancelado", className: "bg-orange-100 text-orange-800 hover:bg-orange-100" },
 }
 
 export default function EventsPage() {
@@ -60,6 +86,24 @@ export default function EventsPage() {
   const [selectedEventType, setSelectedEventType] = useState("")
   const [description, setDescription] = useState("")
 
+  // Obtener la póliza seleccionada
+  const selectedPolicy = useMemo(() => {
+    return policies.find((p) => p.id === selectedPolicyId)
+  }, [policies, selectedPolicyId])
+
+  // Obtener los tipos de eventos disponibles según la póliza seleccionada
+  const availableEventTypes = useMemo(() => {
+    if (!selectedPolicy) return []
+    return EVENT_TYPES_BY_POLICY[selectedPolicy.type as keyof typeof EVENT_TYPES_BY_POLICY] || []
+  }, [selectedPolicy])
+
+  // Resetear el tipo de evento si la póliza cambia y el tipo actual no es válido
+  useEffect(() => {
+    if (selectedEventType && !availableEventTypes.find((t) => t.value === selectedEventType)) {
+      setSelectedEventType("")
+    }
+  }, [availableEventTypes, selectedEventType])
+
   // Fetch policies and events
   useEffect(() => {
     fetchData()
@@ -68,16 +112,19 @@ export default function EventsPage() {
   const fetchData = async () => {
     setLoading(true)
     try {
-      const [policiesRes, eventsRes] = await Promise.all([fetch("/api/policy"), fetch("/api/events")])
+      const [policiesRes, eventsRes] = await Promise.all([fetch("/api/policy/policy-user"), fetch("/api/events")])
 
       if (policiesRes.ok) {
         const policiesData = await policiesRes.json()
-        setPolicies(policiesData)
+        
+        // Maneja tanto { data: [...] } como [...]
+        setPolicies(Array.isArray(policiesData) ? policiesData : (policiesData.data || []))
       }
 
       if (eventsRes.ok) {
         const eventsData = await eventsRes.json()
-        setEvents(eventsData)
+        // Maneja tanto { data: [...] } como [...]
+        setEvents(Array.isArray(eventsData) ? eventsData : (eventsData.data || []))
       }
     } catch (error) {
       console.error("[v0] Error fetching data:", error)
@@ -114,7 +161,7 @@ export default function EventsPage() {
           policy_id: selectedPolicyId,
           event_type: selectedEventType,
           description: description.trim(),
-          status: "pendiente",
+          status: "pending",
         }),
       })
 
@@ -146,7 +193,7 @@ export default function EventsPage() {
 
   const downloadEventSummary = (event: PolicyEvent) => {
     const policy = policies.find((p) => p.id === event.policy_id)
-    const eventTypeLabel = EVENT_TYPES.find((t) => t.value === event.event_type)?.label || event.event_type
+    const eventTypeLabel = ALL_EVENT_TYPES[event.event_type] || event.event_type
     const statusLabel = STATUS_CONFIG[event.status as keyof typeof STATUS_CONFIG]?.label || event.status
 
     const summary = `
@@ -226,8 +273,7 @@ Generado el: ${new Date().toLocaleString("es-ES")}
                 <TableBody>
                   {events.map((event) => {
                     const policy = policies.find((p) => p.id === event.policy_id)
-                    const eventTypeLabel =
-                      EVENT_TYPES.find((t) => t.value === event.event_type)?.label || event.event_type
+                    const eventTypeLabel = ALL_EVENT_TYPES[event.event_type] || event.event_type
                     const statusConfig = STATUS_CONFIG[event.status as keyof typeof STATUS_CONFIG] || {
                       label: event.status,
                       className: "bg-gray-100 text-gray-800",
@@ -236,7 +282,7 @@ Generado el: ${new Date().toLocaleString("es-ES")}
                     return (
                       <TableRow key={event.id}>
                         <TableCell className="font-medium">{eventTypeLabel}</TableCell>
-                        <TableCell>{policy?.policy_number || policy?.type || "N/A"}</TableCell>
+                        <TableCell>{policy?.type || "N/A"}</TableCell>
                         <TableCell>
                           <Badge variant="secondary" className={statusConfig.className}>
                             {statusConfig.label}
@@ -283,7 +329,7 @@ Generado el: ${new Date().toLocaleString("es-ES")}
                 <SelectContent>
                   {policies.map((policy) => (
                     <SelectItem key={policy.id} value={policy.id}>
-                      {policy.policy_number || policy.type} - {policy.type}
+                      {policy.policy_number} - {policy.type}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -292,12 +338,22 @@ Generado el: ${new Date().toLocaleString("es-ES")}
 
             <div className="space-y-2">
               <Label htmlFor="event-type">Tipo de evento *</Label>
-              <Select value={selectedEventType} onValueChange={setSelectedEventType}>
+              <Select
+                value={selectedEventType}
+                onValueChange={setSelectedEventType}
+                disabled={!selectedPolicyId}
+              >
                 <SelectTrigger id="event-type">
-                  <SelectValue placeholder="Seleccione el tipo de evento" />
+                  <SelectValue
+                    placeholder={
+                      selectedPolicyId
+                        ? "Seleccione el tipo de evento"
+                        : "Primero seleccione una póliza"
+                    }
+                  />
                 </SelectTrigger>
                 <SelectContent>
-                  {EVENT_TYPES.map((type) => (
+                  {availableEventTypes.map((type) => (
                     <SelectItem key={type.value} value={type.value}>
                       {type.label}
                     </SelectItem>
@@ -335,6 +391,14 @@ Generado el: ${new Date().toLocaleString("es-ES")}
           </form>
         </Card>
       </div>
+
+      {/* Floating button to redirect to client dashboard */}
+      <Button asChild size="icon" className="fixed bottom-6 right-6 z-50 rounded-full">
+        <Link href="/dashboard/client" aria-label="Volver al dashboard">
+          Ir
+        </Link>
+      </Button>
+
     </DashboardLayout>
   )
 }
