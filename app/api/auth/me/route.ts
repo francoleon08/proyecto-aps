@@ -8,8 +8,7 @@ export async function GET(request: NextRequest) {
     if (!user) {
       return NextResponse.json({ error: "No autenticado" }, { status: 401 });
     }
-
-    return NextResponse.json({ user }, { status: 200 });
+    return NextResponse.json(user, { status: 200 });
   } catch (error) {
     console.error("Error in API me:", error);
     return NextResponse.json(

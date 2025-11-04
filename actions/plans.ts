@@ -85,5 +85,5 @@ export async function getPlanMultiplier(type: string): Promise<number | null> {
     return null
   }*/
   
-  return 1000
+  return 1
 }

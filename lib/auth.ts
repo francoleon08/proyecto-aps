@@ -19,6 +19,8 @@ export interface AuthUser {
   id: string;
   name: string;
   email: string;
+  phone: string | null;
+  address: string | null;
   user_type: Tables<'users'>['user_type'];
   status: Tables<'users'>['status'];
   created_at: string;
@@ -83,7 +85,7 @@ export async function registerUser(
     // Get the newly created user
     const { data: userData, error: userError } = await supabaseAdmin
       .from("users")
-      .select("id, name, email, user_type, status, created_at")
+      .select("id, name, email, phone, address, user_type, status, created_at")
       .eq("id", result.user_id)
       .single();
 
@@ -97,6 +99,8 @@ export async function registerUser(
         id: userData.id,
         name: userData.name,
         email: userData.email,
+        phone: userData.phone,
+        address: userData.address,
         user_type: userData.user_type,
         status: userData.status,
         created_at: userData.created_at,
@@ -118,7 +122,7 @@ export async function loginUser(
     // Get user by email first
     const { data: userData, error: userError } = await supabaseAdmin
       .from("users")
-      .select("*")
+      .select("id, name, email, phone, address, user_type, status, created_at, password")
       .eq("email", credentials.email)
       .single();
 
@@ -179,6 +183,8 @@ export async function loginUser(
         id: userData.id,
         name: userData.name,
         email: userData.email,
+        phone: userData.phone,
+        address: userData.address,
         user_type: userData.user_type,
         status: userData.status,
         created_at: userData.created_at,

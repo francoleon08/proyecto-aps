@@ -32,6 +32,7 @@ export interface QuoteData {
   policyData: LifePolicyData | HomePolicyData | VehiclePolicyData | null
   selectedPlan: PolicyCategory | null
   basePrices: Record<string, number>
+  clientID?: string
 }
 
 export interface PlanOption {
